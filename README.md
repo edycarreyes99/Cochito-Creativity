@@ -1,4 +1,4 @@
-# loveliacreativity
+# Lovelia Creativity
 
 Sistema de pedidos e inventario para la micro empresa Lovelia Creativity.
 
