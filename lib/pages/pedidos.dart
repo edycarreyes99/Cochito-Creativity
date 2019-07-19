@@ -18,8 +18,18 @@ class _PedidosPageState extends State<PedidosPage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.titulo),
       ),
-      body: Center(
-        child: Text('Hola mundo'),
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              'PEDIDOS',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

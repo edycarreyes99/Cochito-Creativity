@@ -1,10 +1,84 @@
 import 'package:flutter/material.dart';
 import 'pages/pedidos.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  Crashlytics.instance.enableInDevMode = true;
 
-class MyApp extends StatelessWidget {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    Crashlytics.instance.onError(details);
+  };
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  FirebaseAnalytics analytics = FirebaseAnalytics();
+
+  FirebaseMessaging _fcm = FirebaseMessaging();
+
+  void _extraerFcmToken() async {
+    if (!Platform.isIOS) {
+      String fcmToken = await _fcm.getToken();
+      print(fcmToken);
+    } else if (Platform.isIOS) {
+      _fcm.onIosSettingsRegistered.listen((data) async {
+        String fcmToken = await _fcm.getToken();
+        print(fcmToken);
+      });
+      _fcm.requestNotificationPermissions(IosNotificationSettings());
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+      print("onMessage: $message");
+      final snackBar = SnackBar(
+        content: Text(message['notification']['title']),
+        action: SnackBarAction(
+          label: 'Ir',
+          onPressed: () => null,
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }, onLaunch: (Map<String, dynamic> message) async {
+      print("onResume: $message");
+      final snackBar = SnackBar(
+        content: Text(message['notification']['title']),
+        action: SnackBarAction(
+          label: 'Ir',
+          onPressed: () => null,
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }, onResume: (Map<String, dynamic> message) async {
+      print("onLaunch: $message");
+      final snackBar = SnackBar(
+        content: Text(message['notification']['title']),
+        action: SnackBarAction(
+          label: 'Ir',
+          onPressed: () => null,
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    });
+    _extraerFcmToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,6 +99,9 @@ class MyApp extends StatelessWidget {
       home: PedidosPage(
         titulo: 'Lovelia Creativity',
       ),
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+      ],
     );
   }
 }
