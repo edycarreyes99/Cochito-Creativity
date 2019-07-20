@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
+import 'pedidos.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({this.titulo});
@@ -39,11 +40,7 @@ class _HomePageState extends State<HomePage> {
           ),
           body: TabBarView(
             children: <Widget>[
-              ListView(
-                children: <Widget>[
-                  Text('Pedidos'),
-                ],
-              ),
+              PedidosPage(),
               ListView(
                 children: <Widget>[
                   Text('Inventario'),
