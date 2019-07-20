@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-class PedidosPage extends StatefulWidget {
+class InventarioPage extends StatefulWidget {
   @override
-  _PedidosPageState createState() => _PedidosPageState();
+  _InventarioPageState createState() => _InventarioPageState();
 }
 
-class _PedidosPageState extends State<PedidosPage> {
+class _InventarioPageState extends State<InventarioPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         children: <Widget>[
-          Text('Pedidos Page'),
+          Text('Inventario Page')
         ],
       ),
     );
