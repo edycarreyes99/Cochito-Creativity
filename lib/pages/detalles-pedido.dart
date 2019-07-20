@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'detalles-compras.dart';
 
 class DetallesPedidoPage extends StatefulWidget {
   DetallesPedidoPage({this.titulo});
@@ -105,6 +106,19 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
                   )
                 ],
               ),
+              onTap: () {
+                print("Cantidad de compras: " +
+                    this.detallesPedidos[index].compras.length.toString());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetallesComprasPage(
+                          titulo: this.detallesPedidos[index].nombreCliente,
+                          detallePedido: this.detallesPedidos[index],
+                        ),
+                  ),
+                );
+              },
             ),
           );
         },

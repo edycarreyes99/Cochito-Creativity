@@ -9,11 +9,11 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() {
-  Crashlytics.instance.enableInDevMode = true;
+  /*Crashlytics.instance.enableInDevMode = true;
 
   FlutterError.onError = (FlutterErrorDetails details) {
     Crashlytics.instance.onError(details);
-  };
+  };*/
 
   runApp(MyApp());
 }

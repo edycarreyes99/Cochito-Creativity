@@ -12,7 +12,8 @@ class DetallePedido {
   int _totalPago;
   List<Compra> _compras;
 
-  DetallePedido(this._id,
+  DetallePedido(
+      this._id,
       this._descripcion,
       this._lugarEntrega,
       this._nombreCliente,
@@ -71,10 +72,9 @@ class DetallePedido {
     return map;
   }
 
-
   List<Compra> comprasToList(List<dynamic> obj) {
     List<Compra> compras = new List<Compra>();
-    obj.map((compra) {
+    obj.forEach((compra) {
       Compra comprita = new Compra(compra['Cantidad'], compra['Producto']);
       compras.add(comprita);
     });
