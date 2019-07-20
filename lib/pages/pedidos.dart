@@ -65,9 +65,20 @@ class _PedidosPageState extends State<PedidosPage> {
             padding: const EdgeInsets.only(top: 8.0),
             child: ListTile(
               title: Text(this.pedidos[i].getId()),
-              subtitle: Text(
-                'Cantidad de Clientes: ' +
-                    this.pedidos[i].getCantidadClientes().toString(),
+              subtitle: Row(
+                children: <Widget>[
+                  Text('Estado: '),
+                  Text(
+                    this.pedidos[i].getEstadoPedido(),
+                    style: TextStyle(
+                      color: this.pedidos[i].getEstadoPedido() == 'Pendiente'
+                          ? Colors.amber
+                          : this.pedidos[i].getEstadoPedido() == 'Agotado'
+                              ? Colors.red
+                              : Colors.green,
+                    ),
+                  )
+                ],
               ),
               trailing: Column(
                 children: <Widget>[

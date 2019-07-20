@@ -7,9 +7,10 @@ class Pedido {
   int _totalProductos;
   int _cantidadClientes;
   String _diaSemanaEntrega;
+  String _estadoPedido;
 
   Pedido(this._id, this._fecha, this._totalPago, this._totalProductos,
-      this._cantidadClientes);
+      this._cantidadClientes, this._estadoPedido);
 
   Pedido.map(dynamic obj) {
     this._id = obj['ID'];
@@ -18,6 +19,7 @@ class Pedido {
     this._totalPago = obj['TotalPago'];
     this._cantidadClientes = obj['CantidadClientes'];
     this._diaSemanaEntrega = obj['DiaSemanaEntrega'];
+    this._estadoPedido = obj['EstadoPedido'];
   }
 
   String getId() => this._id;
@@ -32,6 +34,8 @@ class Pedido {
 
   String getDiaSemanaEntrega() => this._diaSemanaEntrega;
 
+  String getEstadoPedido() => this._estadoPedido;
+
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
     if (this._id != null) {
@@ -42,6 +46,7 @@ class Pedido {
     map['TotalPago'] = this._totalPago;
     map['CantidadClientes'] = this._cantidadClientes;
     map['DiaSemanaEntrega'] = this._diaSemanaEntrega;
+    map['EstadoPedido'] = this._estadoPedido;
 
     return map;
   }
@@ -53,5 +58,6 @@ class Pedido {
     this._totalPago = map['TotalPago'];
     this._cantidadClientes = map['CantidadClientes'];
     this._diaSemanaEntrega = map['DiaSemanaEntrega'];
+    this._estadoPedido = map['EstadoPedido'];
   }
 }
