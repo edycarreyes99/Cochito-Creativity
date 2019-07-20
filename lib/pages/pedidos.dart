@@ -72,7 +72,7 @@ class _PedidosPageState extends State<PedidosPage> {
                     this.pedidos[i].getEstadoPedido(),
                     style: TextStyle(
                       color: this.pedidos[i].getEstadoPedido() == 'Pendiente'
-                          ? Colors.amber
+                          ? Colors.orange
                           : this.pedidos[i].getEstadoPedido() == 'Agotado'
                               ? Colors.red
                               : Colors.green,
