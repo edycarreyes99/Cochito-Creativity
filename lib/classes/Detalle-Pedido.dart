@@ -12,8 +12,7 @@ class DetallePedido {
   int _totalPago;
   List<Compra> _compras;
 
-  DetallePedido(
-      this._id,
+  DetallePedido(this._id,
       this._descripcion,
       this._lugarEntrega,
       this._nombreCliente,
@@ -72,6 +71,16 @@ class DetallePedido {
     return map;
   }
 
+
+  List<Compra> comprasToList(List<dynamic> obj) {
+    List<Compra> compras = new List<Compra>();
+    obj.map((compra) {
+      Compra comprita = new Compra(compra['Cantidad'], compra['Producto']);
+      compras.add(comprita);
+    });
+    return compras;
+  }
+
   DetallePedido.fromMap(Map<String, dynamic> map) {
     this._id = map['ID'];
     this._descripcion = map['Descripcion'];
@@ -81,6 +90,6 @@ class DetallePedido {
     this._fechaEntrega = map['FechaEntrega'];
     this._cantidadProductos = map['CantidadProductos'];
     this._totalPago = map['TotalPago'];
-    this._compras = map['Compras'];
+    this._compras = this.comprasToList(map['Compras']);
   }
 }
