@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/pedidos.dart';
+import 'pages/home.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -47,15 +47,22 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _fcm.configure(onMessage: (Map<String, dynamic> message) async {
       print("onMessage: $message");
-      final snackBar = SnackBar(
-        content: Text(message['notification']['title']),
-        action: SnackBarAction(
-          label: 'Ir',
-          onPressed: () => null,
-        ),
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: ListTile(
+            title: Text(message['notification']['title']),
+            subtitle: Text(message['notification']['body']),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        )
       );
-      Scaffold.of(context).showSnackBar(snackBar);
-    }, onLaunch: (Map<String, dynamic> message) async {
+    }/*, onLaunch: (Map<String, dynamic> message) async {
       print("onResume: $message");
       final snackBar = SnackBar(
         content: Text(message['notification']['title']),
@@ -75,7 +82,8 @@ class _MyAppState extends State<MyApp> {
         ),
       );
       Scaffold.of(context).showSnackBar(snackBar);
-    });
+    }*/);
+    _fcm.subscribeToTopic('pedidos');
     _extraerFcmToken();
   }
 
@@ -96,7 +104,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.lightGreen,
         primaryColor: Colors.redAccent[100],
       ),
-      home: PedidosPage(
+      home: HomePage(
         titulo: 'Lovelia Creativity',
       ),
       navigatorObservers: [
@@ -177,7 +185,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .display1,
             ),
           ],
         ),
