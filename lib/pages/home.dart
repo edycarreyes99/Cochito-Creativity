@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
             bottom: TabBar(
               tabs: <Widget>[
                 Tab(
-                  icon: Icon(Icons.add_shopping_cart),
+                  icon: Icon(Icons.shopping_cart),
                   text: 'Pedidos',
                 ),
                 Tab(
