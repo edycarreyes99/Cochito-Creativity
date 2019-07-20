@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:loveliacreativity/pages/account.dart';
 import 'pedidos.dart';
 import 'inventario.dart';
+import 'account.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({this.titulo});
@@ -43,12 +45,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               PedidosPage(),
               InventarioPage(),
-              Center(
-                child: MaterialButton(
-                  child: Text('Cerrar Sesion'),
-                  onPressed: () => print("Sesion Cerrada"),
-                ),
-              )
+              AccountPage()
             ],
           )),
     );
