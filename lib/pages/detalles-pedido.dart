@@ -16,6 +16,9 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(this.widget.titulo),
+        actions: <Widget>[
+          Icon(Icons.more_vert),
+        ],
       ),
     );
   }
