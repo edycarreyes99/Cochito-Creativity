@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Compra.dart';
 
 class DetallePedido {
   String _id;
@@ -9,6 +10,7 @@ class DetallePedido {
   Timestamp _fechaEntrega;
   int _cantidadProductos;
   int _totalPago;
+  List<Compra> _compras;
 
   DetallePedido(
       this._id,
@@ -18,7 +20,8 @@ class DetallePedido {
       this._redSocial,
       this._fechaEntrega,
       this._cantidadProductos,
-      this._totalPago);
+      this._totalPago,
+      this._compras);
 
   DetallePedido.map(dynamic obj) {
     this._id = obj['ID'];
@@ -29,6 +32,7 @@ class DetallePedido {
     this._fechaEntrega = obj['FechaEntrega'];
     this._cantidadProductos = obj['CantidadProductos'];
     this._totalPago = obj['TotalPago'];
+    this._compras = obj['Compras'];
   }
 
   String get id => this._id;
@@ -47,6 +51,8 @@ class DetallePedido {
 
   int get totalPago => this._totalPago;
 
+  List<Compra> get compras => this._compras;
+
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
 
@@ -61,6 +67,7 @@ class DetallePedido {
     map['FechaEntrega'] = this.fechaEntrega;
     map['CantidadProductos'] = this.cantidadProductos;
     map['TotalPago'] = this.totalPago;
+    map['Compras'] = this._compras;
 
     return map;
   }
@@ -74,5 +81,6 @@ class DetallePedido {
     this._fechaEntrega = map['FechaEntrega'];
     this._cantidadProductos = map['CantidadProductos'];
     this._totalPago = map['TotalPago'];
+    this._compras = map['Compras'];
   }
 }
