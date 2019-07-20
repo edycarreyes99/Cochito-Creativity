@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import '../classes/Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'detalles-pedido.dart';
 
 class PedidosPage extends StatefulWidget {
   @override
@@ -61,13 +62,55 @@ class _PedidosPageState extends State<PedidosPage> {
         itemCount: this.pedidos.length,
         itemBuilder: (context, i) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(top: 8.0),
             child: ListTile(
               title: Text(this.pedidos[i].getId()),
-              subtitle: Text(this.pedidos[i].getFecha().toString()),
+              subtitle: Text(
+                'Cantidad de Clientes: ' +
+                    this.pedidos[i].getCantidadClientes().toString(),
+              ),
+              trailing: Column(
+                children: <Widget>[
+                  Text(this.pedidos[i].getDiaSemanaEntrega()),
+                  Padding(
+                    padding: EdgeInsets.only(top: 12.0),
+                    child: Text(
+                      'C\$' + this.pedidos[i].getTotalPago().toString(),
+                    ),
+                  )
+                ],
+              ),
+              leading: CircleAvatar(
+                backgroundColor: Colors.lightGreen,
+                child: Center(
+                  child: Text(
+                    this.pedidos[i].getTotalProductos().toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetallesPedidoPage(
+                          titulo: this.pedidos[i].getId(),
+                        ),
+                  ),
+                );
+              },
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add_shopping_cart,
+          color: Colors.white,
+        ),
+        onPressed: null,
       ),
     );
   }
