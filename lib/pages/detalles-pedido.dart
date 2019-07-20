@@ -20,6 +20,11 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
           Icon(Icons.more_vert),
         ],
       ),
+      body: ListView(
+        children: <Widget>[
+          Text('Hola Mundo')
+        ],
+      ),
     );
   }
 }
