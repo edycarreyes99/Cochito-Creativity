@@ -12,10 +12,12 @@ class PedidosPage extends StatefulWidget {
 class _PedidosPageState extends State<PedidosPage> {
   List<Pedido> pedidos;
   Firestore fs = Firestore.instance;
+  final CollectionReference pedidosRef =
+      Firestore.instance.collection('Pedidos');
   StreamSubscription<QuerySnapshot> pedidoSub;
 
   Stream<QuerySnapshot> getListaPedidos({int offset, int limit}) {
-    Stream<QuerySnapshot> snapshots = fs.collection('Pedidos').snapshots();
+    Stream<QuerySnapshot> snapshots = this.pedidosRef.snapshots();
 
     if (offset != null) {
       snapshots = snapshots.skip(offset);
@@ -32,9 +34,7 @@ class _PedidosPageState extends State<PedidosPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    pedidos = new List();
-
-    pedidoSub.cancel();
+    this.pedidos = new List();
 
     pedidoSub = this.getListaPedidos().listen((QuerySnapshot snapshot) {
       final List<Pedido> pedidoss = snapshot.documents
@@ -57,10 +57,17 @@ class _PedidosPageState extends State<PedidosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: <Widget>[
-          Text('Pedidos Page'),
-        ],
+      body: ListView.builder(
+        itemCount: this.pedidos.length,
+        itemBuilder: (context, i) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(this.pedidos[i].getId()),
+              subtitle: Text(this.pedidos[i].getFecha().toString()),
+            ),
+          );
+        },
       ),
     );
   }

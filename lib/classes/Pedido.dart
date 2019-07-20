@@ -16,15 +16,15 @@ class Pedido {
     this._cantidadClientes = obj['CantidadClientes'];
   }
 
-  String get id => this._id;
+  String getId() => this._id;
 
-  String get fecha => this._fecha;
+  String getFecha() => this._fecha;
 
-  int get totalPago => this._totalPago;
+  int getTotalPago() => this._totalPago;
 
-  int get totalProductos => this._totalProductos;
+  int getTotalProductos() => this._totalProductos;
 
-  int get cantidadClientes => this._cantidadClientes;
+  int getCantidadClientes() => this._cantidadClientes;
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
@@ -41,7 +41,7 @@ class Pedido {
 
   Pedido.fromMap(Map<String, dynamic> map) {
     this._id = map['ID'];
-    this._fecha = map['FechaEntrega'];
+    this._fecha = map['FechaEntrega'].toString();
     this._totalProductos = map['TotalProductos'];
     this._totalPago = map['TotalPago'];
     this._cantidadClientes = map['CantidadClientes'];
