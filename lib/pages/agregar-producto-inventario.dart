@@ -50,19 +50,38 @@ class _AgregarProductoInventarioPageState
     return snapshots;
   }
 
-  Future<Uri> subirImagenStorage() async {
-    String filename = basename(this._imagenProducto.path);
+  bool validarFormulario() {
+    final form = this._formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-    StorageReference storageReference =
-        storage.ref().child('Inventario/${this.generarId()}');
+  Future<String> subirImagenStorage() async {
+    if (validarFormulario() && this._imagenProducto != null) {
+      String filename = basename(this._imagenProducto.path);
 
-    StorageUploadTask uploadTask =
-        storageReference.putFile(this._imagenProducto);
+      String extension = context.extension(filename);
 
-    Uri url = (await uploadTask.onComplete).uploadSessionUri;
-    print(url.toString());
+      StorageReference storageReference =
+          storage.ref().child('Inventario/${this.generarId()}');
 
-    return url;
+      StorageUploadTask uploadTask =
+          storageReference.putFile(this._imagenProducto);
+
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+
+      Uri location = taskSnapshot.uploadSessionUri;
+
+      print("Objeto cargado a la nube de firebase");
+
+      return await storageReference.getDownloadURL();
+    } else {
+      return null;
+    }
   }
 
   Future tomarImagen(String lugar) async {
@@ -247,7 +266,26 @@ class _AgregarProductoInventarioPageState
                     RaisedButton(
                       color: Colors.redAccent[100],
                       child: Text('Agregar Producto'),
-                      onPressed: () => this.subirImagenStorage(),
+                      onPressed: () {
+                        this.subirImagenStorage().then((url) {
+                          if (url != null) {
+                            this
+                                .fs
+                                .collection('Inventario')
+                                .document(this.generarId())
+                                .setData({
+                              'Imagen': url,
+                              'Precio': this._precioProducto
+                            }).then((value) {
+                              Navigator.of(context).pop();
+                            }).catchError((e) {
+                              print(e.toString());
+                            });
+                          }
+                        }).catchError((e) {
+                          print(e.toString());
+                        });
+                      },
                     ),
                   ],
                 ),
