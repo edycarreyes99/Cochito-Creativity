@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detalles-compras.dart';
+import 'agregar-cliente.dart';
 
 class DetallesPedidoPage extends StatefulWidget {
   DetallesPedidoPage({this.titulo});
@@ -151,7 +152,16 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
           Icons.person_add,
           color: Colors.white,
         ),
-        onPressed: null,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AgregarClientePage(
+                    idPedido: this.widget.titulo,
+                  ),
+            ),
+          );
+        },
       ),
     );
   }
