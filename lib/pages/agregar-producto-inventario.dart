@@ -267,6 +267,20 @@ class _AgregarProductoInventarioPageState
                       color: Colors.redAccent[100],
                       child: Text('Agregar Producto'),
                       onPressed: () {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CupertinoAlertDialog(
+                                title: Text('Subiendo Producto'),
+                                content: Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                              );
+                            });
                         this.subirImagenStorage().then((url) {
                           if (url != null) {
                             this
@@ -278,12 +292,58 @@ class _AgregarProductoInventarioPageState
                               'Precio': this._precioProducto
                             }).then((value) {
                               Navigator.of(context).pop();
+                              Navigator.of(context).pop();
                             }).catchError((e) {
                               print(e.toString());
+                              Navigator.of(context).pop();
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return CupertinoAlertDialog(
+                                      title: Text('Hubo un error:'),
+                                      actions: <Widget>[
+                                        CupertinoDialogAction(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: Text('Cerrar'),
+                                        )
+                                      ],
+                                      content: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 20.0),
+                                        child: Center(
+                                          child: Text(e.toString()),
+                                        ),
+                                      ),
+                                    );
+                                  });
                             });
                           }
                         }).catchError((e) {
                           print(e.toString());
+                          Navigator.of(context).pop();
+                          showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return CupertinoAlertDialog(
+                                  title: Text('Hubo un error:'),
+                                  actions: <Widget>[
+                                    CupertinoDialogAction(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: Text('Cerrar'),
+                                    )
+                                  ],
+                                  content: Padding(
+                                    padding: const EdgeInsets.only(top: 20.0),
+                                    child: Center(
+                                      child: Text(e.toString()),
+                                    ),
+                                  ),
+                                );
+                              });
                         });
                       },
                     ),

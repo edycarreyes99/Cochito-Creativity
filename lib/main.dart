@@ -48,21 +48,20 @@ class _MyAppState extends State<MyApp> {
     _fcm.configure(onMessage: (Map<String, dynamic> message) async {
       print("onMessage: $message");
       showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          content: ListTile(
-            title: Text(message['notification']['title']),
-            subtitle: Text(message['notification']['body']),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-        )
-      );
-    }/*, onLaunch: (Map<String, dynamic> message) async {
+          context: context,
+          builder: (context) => AlertDialog(
+                content: ListTile(
+                  title: Text(message['notification']['title']),
+                  subtitle: Text(message['notification']['body']),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              ));
+    } /*, onLaunch: (Map<String, dynamic> message) async {
       print("onResume: $message");
       final snackBar = SnackBar(
         content: Text(message['notification']['title']),
@@ -82,7 +81,8 @@ class _MyAppState extends State<MyApp> {
         ),
       );
       Scaffold.of(context).showSnackBar(snackBar);
-    }*/);
+    }*/
+        );
     _fcm.subscribeToTopic('pedidos');
     _extraerFcmToken();
   }
@@ -185,10 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .display1,
+              style: Theme.of(context).textTheme.display1,
             ),
           ],
         ),

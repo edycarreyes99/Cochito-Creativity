@@ -4,6 +4,7 @@ import 'dart:async';
 import '../classes/Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detalles-pedido.dart';
+import 'agregar-pedido.dart';
 
 class PedidosPage extends StatefulWidget {
   @override
@@ -121,7 +122,14 @@ class _PedidosPageState extends State<PedidosPage> {
           Icons.add_shopping_cart,
           color: Colors.white,
         ),
-        onPressed: null,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AgregarPedidoPage(),
+            ),
+          );
+        },
       ),
     );
   }
