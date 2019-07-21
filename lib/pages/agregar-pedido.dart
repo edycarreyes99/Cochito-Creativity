@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'dart:io' show Platform;
 
 class AgregarPedidoPage extends StatefulWidget {
   @override
@@ -45,16 +46,38 @@ class _AgregarPedidoPageState extends State<AgregarPedidoPage> {
   }
 
   Future<Null> seleccionarFecha(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate:
-            this.fechaModificada == null ? this.fechaHoy : this.fechaModificada,
-        firstDate: DateTime(
-          this.fechaHoy.year,
-          this.fechaHoy.month,
-          this.fechaHoy.day,
-        ),
-        lastDate: DateTime(2101));
+    DateTime picked;
+    if (Platform.isAndroid || Platform.isAndroid) {
+      picked = await showDatePicker(
+          context: context,
+          initialDate: this.fechaModificada == null
+              ? this.fechaHoy
+              : this.fechaModificada,
+          firstDate: DateTime(
+            this.fechaHoy.year,
+            this.fechaHoy.month,
+            this.fechaHoy.day,
+          ),
+          lastDate: DateTime(2101));
+    } else if (Platform.isIOS) {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext ctx) {
+            return CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              initialDateTime: this.fechaModificada == null
+                  ? this.fechaHoy
+                  : this.fechaModificada,
+              minimumDate: this.fechaHoy,
+              maximumDate: DateTime(2101),
+              onDateTimeChanged: (change) {
+                setState(() {
+                  this.fechaModificada = change;
+                });
+              },
+            );
+          });
+    }
     if (picked != null && picked != fechaHoy)
       setState(() {
         fechaModificada = picked;
