@@ -73,7 +73,10 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
       ),
       body: this.detallesPedidos.length == 0
           ? Center(
-              child: Text('Aun no hay ningun pedido registrado.'),
+              child: Text(
+                'Aún no hay ningun cliente registrado para este pedido.',
+                textAlign: TextAlign.center,
+              ),
             )
           : ListView.builder(
               itemCount: this.detallesPedidos.length,
