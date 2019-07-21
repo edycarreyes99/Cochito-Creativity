@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 
 class AgregarProductoInventarioPage extends StatefulWidget {
   AgregarProductoInventarioPage({this.cantidadProductosInventario});
@@ -28,6 +30,8 @@ class _AgregarProductoInventarioPageState
   Firestore fs = Firestore.instance;
   StreamSubscription<QuerySnapshot> agregarProductoSub;
 
+  FirebaseStorage storage = FirebaseStorage.instance;
+
   Stream<QuerySnapshot> inventarioRef =
       Firestore.instance.collection('Inventario/').snapshots();
 
@@ -44,6 +48,21 @@ class _AgregarProductoInventarioPageState
     }
 
     return snapshots;
+  }
+
+  Future<Uri> subirImagenStorage() async {
+    String filename = basename(this._imagenProducto.path);
+
+    StorageReference storageReference =
+        storage.ref().child('Inventario/${this.generarId()}');
+
+    StorageUploadTask uploadTask =
+        storageReference.putFile(this._imagenProducto);
+
+    Uri url = (await uploadTask.onComplete).uploadSessionUri;
+    print(url.toString());
+
+    return url;
   }
 
   Future tomarImagen(String lugar) async {
@@ -66,6 +85,10 @@ class _AgregarProductoInventarioPageState
         print("Metodo para escoger imagen no definido, intente nuevamente");
         break;
     }
+  }
+
+  String generarId() {
+    return 'PROD-' + (this.widget.cantidadProductosInventario + 1).toString();
   }
 
   @override
@@ -224,7 +247,7 @@ class _AgregarProductoInventarioPageState
                     RaisedButton(
                       color: Colors.redAccent[100],
                       child: Text('Agregar Producto'),
-                      onPressed: () => null,
+                      onPressed: () => this.subirImagenStorage(),
                     ),
                   ],
                 ),
