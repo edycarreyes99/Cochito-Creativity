@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'agregar-producto-inventario.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import '../classes/Producto.dart';
 
 class InventarioPage extends StatefulWidget {
   @override
@@ -10,14 +12,15 @@ class InventarioPage extends StatefulWidget {
 }
 
 class _InventarioPageState extends State<InventarioPage> {
+  List<Producto> productos;
   Firestore fs = Firestore.instance;
-  StreamSubscription<QuerySnapshot> agregarProductoSub;
+  StreamSubscription<QuerySnapshot> productosSub;
 
   int cantidadProductos = 0;
 
   Stream<QuerySnapshot> getListaDeInventario({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots =
-        Firestore.instance.collection('Inventario/').snapshots();
+        Firestore.instance.collection('/Inventario/').snapshots();
 
     if (offset != null) {
       snapshots = snapshots.skip(offset);
@@ -34,19 +37,45 @@ class _InventarioPageState extends State<InventarioPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    this.agregarProductoSub =
+
+    this.productos = new List();
+
+    this.productosSub =
         this.getListaDeInventario().listen((QuerySnapshot snapshot) {
+      final List<Producto> productoss = snapshot.documents
+          .map((documentSnapshot) => Producto.fromMap(documentSnapshot.data))
+          .toList();
       setState(() {
+        this.productos = productoss;
         this.cantidadProductos = snapshot.documents.length;
       });
     });
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    this.productosSub.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: <Widget>[Text('Inventario Page')],
+      body: GridView.builder(
+        itemCount: this.productos.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+        ),
+        itemBuilder: (BuildContext ctx, int index) {
+          return GestureDetector(
+            onTap: () => null,
+            child: Container(
+              decoration: BoxDecoration(),
+              child: Text('Hola Mundo'),
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(

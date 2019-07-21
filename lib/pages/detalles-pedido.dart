@@ -16,6 +16,7 @@ class DetallesPedidoPage extends StatefulWidget {
 }
 
 class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
+
   List<DetallePedido> detallesPedidos;
   Firestore fs = Firestore.instance;
   StreamSubscription<QuerySnapshot> detallesPedidoSub;
