@@ -5,6 +5,7 @@ import 'agregar-producto-inventario.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import '../classes/Producto.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class InventarioPage extends StatefulWidget {
   @override
@@ -69,10 +70,19 @@ class _InventarioPageState extends State<InventarioPage> {
         ),
         itemBuilder: (BuildContext ctx, int index) {
           return GestureDetector(
-            onTap: () => null,
-            child: Container(
-              decoration: BoxDecoration(),
-              child: Text('Hola Mundo'),
+            onTap: () => print("Objeto Tocado"),
+            child: CachedNetworkImage(
+              imageUrl: this.productos[index].imagen,
+              imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           );
         },

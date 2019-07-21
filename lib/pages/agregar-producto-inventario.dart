@@ -84,7 +84,7 @@ class _AgregarProductoInventarioPageState
     this.cantidadProductos = null;
     this._nombreProducto = null;
     this._precioProducto = null;
-    this.agregarProductoSub.cancel();
+    // this.agregarProductoSub.cancel();
     super.dispose();
   }
 
