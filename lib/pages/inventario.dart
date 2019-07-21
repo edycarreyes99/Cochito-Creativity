@@ -63,30 +63,34 @@ class _InventarioPageState extends State<InventarioPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GridView.builder(
-        itemCount: this.productos.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-        ),
-        itemBuilder: (BuildContext ctx, int index) {
-          return GestureDetector(
-            onTap: () => print("Objeto Tocado"),
-            child: CachedNetworkImage(
-              imageUrl: this.productos[index].imagen,
-              imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+      body: this.productos.length == 0
+          ? Center(
+              child: Text('Aun no hay productos en el inventario.'),
+            )
+          : GridView.builder(
+              itemCount: this.productos.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+              ),
+              itemBuilder: (BuildContext ctx, int index) {
+                return GestureDetector(
+                  onTap: () => print("Objeto Tocado"),
+                  child: CachedNetworkImage(
+                    imageUrl: this.productos[index].imagen,
+                    imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+                );
+              },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.add_photo_alternate,

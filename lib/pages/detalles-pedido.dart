@@ -16,7 +16,6 @@ class DetallesPedidoPage extends StatefulWidget {
 }
 
 class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
-
   List<DetallePedido> detallesPedidos;
   Firestore fs = Firestore.instance;
   StreamSubscription<QuerySnapshot> detallesPedidoSub;
@@ -72,58 +71,78 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
           Icon(Icons.more_vert),
         ],
       ),
-      body: ListView.builder(
-        itemCount: this.detallesPedidos.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: ListTile(
-              title: Text(this.detallesPedidos[index].nombreCliente),
-              leading: CircleAvatar(
-                backgroundColor: Colors.lightGreen,
-                child: Center(
-                  child: Text(
-                    this.detallesPedidos[index].cantidadProductos.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              subtitle: Text(
-                this.detallesPedidos[index].lugarEntrega +
-                    " | " +
-                    this.detallesPedidos[index].fechaEntrega.hour.toString() +
-                    ":" +
-                    this.detallesPedidos[index].fechaEntrega.minute.toString(),
-              ),
-              trailing: Column(
-                children: <Widget>[
-                  Text(this.detallesPedidos[index].redSocial),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Text('C\$' +
-                        this.detallesPedidos[index].totalPago.toString()),
-                  )
-                ],
-              ),
-              onTap: () {
-                print("Cantidad de compras: " +
-                    this.detallesPedidos[index].compras.length.toString());
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetallesComprasPage(
-                          titulo: this.detallesPedidos[index].nombreCliente,
-                          detallePedido: this.detallesPedidos[index],
+      body: this.detallesPedidos.length == 0
+          ? Center(
+              child: Text('Aun no hay ningun pedido registrado.'),
+            )
+          : ListView.builder(
+              itemCount: this.detallesPedidos.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: ListTile(
+                    title: Text(this.detallesPedidos[index].nombreCliente),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.lightGreen,
+                      child: Center(
+                        child: Text(
+                          this
+                              .detallesPedidos[index]
+                              .cantidadProductos
+                              .toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
+                      ),
+                    ),
+                    subtitle: Text(
+                      this.detallesPedidos[index].lugarEntrega +
+                          " | " +
+                          this
+                              .detallesPedidos[index]
+                              .fechaEntrega
+                              .hour
+                              .toString() +
+                          ":" +
+                          this
+                              .detallesPedidos[index]
+                              .fechaEntrega
+                              .minute
+                              .toString(),
+                    ),
+                    trailing: Column(
+                      children: <Widget>[
+                        Text(this.detallesPedidos[index].redSocial),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Text('C\$' +
+                              this.detallesPedidos[index].totalPago.toString()),
+                        )
+                      ],
+                    ),
+                    onTap: () {
+                      print("Cantidad de compras: " +
+                          this
+                              .detallesPedidos[index]
+                              .compras
+                              .length
+                              .toString());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetallesComprasPage(
+                                titulo:
+                                    this.detallesPedidos[index].nombreCliente,
+                                detallePedido: this.detallesPedidos[index],
+                              ),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.person_add,
