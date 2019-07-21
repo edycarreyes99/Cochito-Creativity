@@ -1,11 +1,16 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AgregarProductoInventarioPage extends StatefulWidget {
+  AgregarProductoInventarioPage({this.cantidadProductosInventario});
+
+  final int cantidadProductosInventario;
+
   @override
   _AgregarProductoInventarioPageState createState() =>
       _AgregarProductoInventarioPageState();
@@ -14,6 +19,32 @@ class AgregarProductoInventarioPage extends StatefulWidget {
 class _AgregarProductoInventarioPageState
     extends State<AgregarProductoInventarioPage> {
   File _imagenProducto;
+  double _precioProducto;
+  final _formKey = new GlobalKey<FormState>();
+  String _nombreProducto;
+  String _idNuevoProducto;
+  int cantidadProductos;
+
+  Firestore fs = Firestore.instance;
+  StreamSubscription<QuerySnapshot> agregarProductoSub;
+
+  Stream<QuerySnapshot> inventarioRef =
+      Firestore.instance.collection('Inventario/').snapshots();
+
+  Stream<QuerySnapshot> getListaDeInventario({int offset, int limit}) {
+    Stream<QuerySnapshot> snapshots =
+        Firestore.instance.collection('Inventario/').snapshots();
+
+    if (offset != null) {
+      snapshots = snapshots.skip(offset);
+    }
+
+    if (limit != null) {
+      snapshots = snapshots.take(limit);
+    }
+
+    return snapshots;
+  }
 
   Future tomarImagen(String lugar) async {
     switch (lugar) {
@@ -38,9 +69,22 @@ class _AgregarProductoInventarioPageState
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this._idNuevoProducto =
+        'PROD-' + (this.widget.cantidadProductosInventario + 1).toString();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     this._imagenProducto = null;
+    this._idNuevoProducto = null;
+    this.cantidadProductos = null;
+    this._nombreProducto = null;
+    this._precioProducto = null;
+    this.agregarProductoSub.cancel();
     super.dispose();
   }
 
@@ -117,6 +161,73 @@ class _AgregarProductoInventarioPageState
                     ),
                   ),
                 ],
+              ),
+            ],
+          ),
+          Column(
+            children: <Widget>[
+              Form(
+                key: _formKey,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.7),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.text,
+                          enabled: false,
+                          autofocus: false,
+                          initialValue: this._idNuevoProducto,
+                          decoration: InputDecoration(
+                            labelText: 'ID de Producto',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          autofocus: false,
+                          validator: (value) => value.isEmpty
+                              ? 'Debe de ingresar un precio para el producto'
+                              : null,
+                          onSaved: (value) =>
+                              this._precioProducto = double.parse(value),
+                          decoration: InputDecoration(
+                            prefix: Text('C\$'),
+                            suffix: IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.redAccent[100],
+                              ),
+                              onPressed: () {
+                                this._formKey.currentState.reset();
+                              },
+                            ),
+                            labelText: 'Precio',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 50.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    RaisedButton(
+                      color: Colors.redAccent[100],
+                      child: Text('Agregar Producto'),
+                      onPressed: () => null,
+                    ),
+                  ],
+                ),
               )
             ],
           )
