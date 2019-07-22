@@ -139,6 +139,7 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
                                 titulo:
                                     this.detallesPedidos[index].nombreCliente,
                                 detallePedido: this.detallesPedidos[index],
+                                idPedido: this.widget.titulo,
                               ),
                         ),
                       );
