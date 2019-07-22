@@ -209,6 +209,7 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                       return GestureDetector(
                         onTap: () => print("Objeto Tocado"),
                         child: Container(
+                          padding: EdgeInsets.all(3.0),
                             alignment: Alignment.topRight,
                             decoration: BoxDecoration(
                                 image: DecorationImage(
