@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import '../classes/Detalle-Pedido.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../classes/Producto.dart';
+import 'dart:async';
 
 class DetallesComprasPage extends StatefulWidget {
   DetallesComprasPage({this.titulo, this.detallePedido});
@@ -14,6 +18,43 @@ class DetallesComprasPage extends StatefulWidget {
 }
 
 class _DetallesComprasPageState extends State<DetallesComprasPage> {
+  List<Producto> productos;
+  Firestore fs = Firestore.instance;
+  StreamSubscription<QuerySnapshot> productosSub;
+
+  Stream<QuerySnapshot> getListaDeInventario({int offset, int limit}) {
+    Stream<QuerySnapshot> snapshots =
+        Firestore.instance.collection('/Inventario/').snapshots();
+
+    if (offset != null) {
+      snapshots = snapshots.skip(offset);
+    }
+
+    if (limit != null) {
+      snapshots = snapshots.take(limit);
+    }
+
+    return snapshots;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    this.productos = new List();
+
+    this.productosSub =
+        this.getListaDeInventario().listen((QuerySnapshot snapshot) {
+      final List<Producto> productoss = snapshot.documents
+          .map((documentSnapshot) => Producto.fromMap(documentSnapshot.data))
+          .toList();
+      setState(() {
+        this.productos = productoss;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,17 +198,72 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
               ),
               SizedBox(
                 height: 200.0,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: this.widget.detallePedido.compras.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Text('Hola Mundo'),
-                    );
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                  child: GridView.builder(
+                    itemCount: this.widget.detallePedido.compras.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                    ),
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return GestureDetector(
+                        onTap: () => print("Objeto Tocado"),
+                        child: Container(
+                            alignment: Alignment.topRight,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(this
+                                        .productos
+                                        .firstWhere((producto) =>
+                                            this
+                                                .widget
+                                                .detallePedido
+                                                .compras[index]
+                                                .producto ==
+                                            producto.id)
+                                        .imagen),
+                                    fit: BoxFit.cover)),
+                            child: CircleAvatar(
+                              child: Text(
+                                this
+                                    .widget
+                                    .detallePedido
+                                    .compras[index]
+                                    .cantidadProducto
+                                    .toString(),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                              backgroundColor: Colors.redAccent[100],
+                            ) /*CachedNetworkImage(
+                            imageUrl: this
+                                .productos
+                                .firstWhere((producto) =>
+                                    this
+                                        .widget
+                                        .detallePedido
+                                        .compras[index]
+                                        .producto ==
+                                    producto.id)
+                                .imagen,
+                            imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),*/
+                            ),
+                      );
+                    },
+                  ),
                 ),
               )
             ],

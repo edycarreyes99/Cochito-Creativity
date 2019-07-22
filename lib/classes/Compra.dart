@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Compra {
   int _cantidadProducto;
-  DocumentReference _producto;
+  String _producto;
 
   Compra(this._cantidadProducto, this._producto);
 
@@ -13,7 +13,7 @@ class Compra {
 
   int get cantidadProducto => this._cantidadProducto;
 
-  DocumentReference get producto => this._producto;
+  String get producto => this._producto;
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();

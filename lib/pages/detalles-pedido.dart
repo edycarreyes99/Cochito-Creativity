@@ -23,7 +23,7 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
 
   Stream<QuerySnapshot> getListaDetallesPedidos({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots = Firestore.instance
-        .collection('Pedidos/${this.widget.titulo}/Productos')
+        .collection('Pedidos/${this.widget.titulo}/Clientes')
         .snapshots();
 
     if (offset != null) {

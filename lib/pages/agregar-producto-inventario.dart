@@ -289,7 +289,8 @@ class _AgregarProductoInventarioPageState
                                 .document(this.generarId())
                                 .setData({
                               'Imagen': url,
-                              'Precio': this._precioProducto
+                              'Precio': this._precioProducto,
+                              'ID': this.generarId()
                             }).then((value) {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
