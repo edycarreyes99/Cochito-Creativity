@@ -90,6 +90,53 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.text,
+                          enabled: true,
+                          autofocus: false,
+                          validator: (value) => value.isEmpty
+                              ? 'Debe de ingresar un lugar de entrega'
+                              : null,
+                          decoration: InputDecoration(
+                            labelText: 'Lugar Entrega',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.text,
+                          enabled: true,
+                          autofocus: false,
+                          validator: (value) => value.isEmpty
+                              ? 'Debe de ingresar una red social'
+                              : null,
+                          decoration: InputDecoration(
+                            labelText: 'Red Social',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          cursorColor: Colors.redAccent[100],
+                          keyboardType: TextInputType.text,
+                          enabled: true,
+                          autofocus: false,
+                          maxLines: 5,
+                          validator: (value) => value.isEmpty
+                              ? 'Debe de ingresar una descripción'
+                              : null,
+                          decoration: InputDecoration(
+                            labelText: 'Descripción',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
