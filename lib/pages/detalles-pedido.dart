@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detalles-compras.dart';
+import 'agregar-cliente.dart';
 
 class DetallesPedidoPage extends StatefulWidget {
   DetallesPedidoPage({this.titulo});
@@ -22,7 +23,7 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
 
   Stream<QuerySnapshot> getListaDetallesPedidos({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots = Firestore.instance
-        .collection('Pedidos/${this.widget.titulo}/Productos')
+        .collection('Pedidos/${this.widget.titulo}/Clientes')
         .snapshots();
 
     if (offset != null) {
@@ -73,7 +74,10 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
       ),
       body: this.detallesPedidos.length == 0
           ? Center(
-              child: Text('Aun no hay ningun pedido registrado.'),
+              child: Text(
+                'Aún no hay ningun cliente registrado para este pedido.',
+                textAlign: TextAlign.center,
+              ),
             )
           : ListView.builder(
               itemCount: this.detallesPedidos.length,
@@ -135,6 +139,7 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
                                 titulo:
                                     this.detallesPedidos[index].nombreCliente,
                                 detallePedido: this.detallesPedidos[index],
+                                idPedido: this.widget.titulo,
                               ),
                         ),
                       );
@@ -148,7 +153,16 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
           Icons.person_add,
           color: Colors.white,
         ),
-        onPressed: null,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AgregarClientePage(
+                    idPedido: this.widget.titulo,
+                  ),
+            ),
+          );
+        },
       ),
     );
   }

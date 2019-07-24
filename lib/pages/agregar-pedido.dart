@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:io' show Platform;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AgregarPedidoPage extends StatefulWidget {
   @override
@@ -9,6 +10,10 @@ class AgregarPedidoPage extends StatefulWidget {
 }
 
 class _AgregarPedidoPageState extends State<AgregarPedidoPage> {
+  Firestore fs = Firestore.instance;
+
+  CollectionReference pedidosRef = Firestore.instance.collection('Pedidos');
+
   List<String> diasSemana = [
     'Lunes',
     'Martes',
@@ -43,6 +48,29 @@ class _AgregarPedidoPageState extends State<AgregarPedidoPage> {
         ", " +
         date.day.toString() +
         " de ${mesesAno[date.month - 1]}";
+  }
+
+  Future<Null> subirPedido(DateTime fecha) async {
+    await this
+        .pedidosRef
+        .document(this.generarFechaPedidoParaBaseDeDatos(fecha))
+        .setData({
+      'CantidadClientes': 0,
+      'DiaSemanaEntrega': this.diasSemana[fecha.weekday - 1],
+      'EstadoPedido': 'Pendiente',
+      'FechaEntrega': fecha,
+      'ID': this.generarFechaPedidoParaBaseDeDatos(fecha),
+      'TotalPago': 0,
+      'TotalProductos': 0
+    });
+  }
+
+  String generarFechaPedidoParaBaseDeDatos(DateTime fecha) {
+    return fecha.day.toString() +
+        "-" +
+        fecha.month.toString() +
+        "-" +
+        fecha.year.toString();
   }
 
   Future<Null> seleccionarFecha(BuildContext context) async {
@@ -99,7 +127,52 @@ class _AgregarPedidoPageState extends State<AgregarPedidoPage> {
         actions: <Widget>[
           FlatButton(
             child: Text('Guardar'),
-            onPressed: () => null,
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CupertinoAlertDialog(
+                      title: Text('Creando Pedido'),
+                      content: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  });
+              this
+                  .subirPedido(this.fechaModificada == null
+                      ? this.fechaHoy
+                      : this.fechaModificada)
+                  .then((value) {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              }).catchError((e) {
+                Navigator.of(context).pop();
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return CupertinoAlertDialog(
+                        title: Text('Hubo un error:'),
+                        actions: <Widget>[
+                          CupertinoDialogAction(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('Cerrar'),
+                          )
+                        ],
+                        content: Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Center(
+                            child: Text(e.toString()),
+                          ),
+                        ),
+                      );
+                    });
+              });
+            },
           )
         ],
       ),
