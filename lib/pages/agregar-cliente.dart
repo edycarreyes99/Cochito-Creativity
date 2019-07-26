@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
@@ -14,9 +15,28 @@ class AgregarClientePage extends StatefulWidget {
 class _AgregarClientePageState extends State<AgregarClientePage> {
   final _formKey = new GlobalKey<FormState>();
   final _formKeyFecha = new GlobalKey<FormState>();
+  final fs = Firestore.instance;
 
   DateTime fechaHoy = DateTime.now();
   TimeOfDay fechaModificada;
+
+  String nombreCliente;
+  String descripcion;
+  String lugarEntrega;
+  String redSocial;
+  DateTime fechaEntrega;
+
+  bool validar() {
+    final form = this._formKey.currentState;
+    final formDate = this._formKeyFecha.currentState;
+    if (form.validate() && formDate.validate()) {
+      form.save();
+      formDate.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   String generarFechaPedidoParaBaseDeDatos(DateTime fecha) {
     return fecha.day.toString() +
@@ -28,10 +48,10 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
 
   Future<Null> seleccionarHora(BuildContext context) async {
     TimeOfDay picked;
-    if (Platform.isIOS || Platform.isIOS) {
+    if (Platform.isAndroid || Platform.isFuchsia) {
       picked =
           await showTimePicker(context: context, initialTime: TimeOfDay.now());
-    } else if (Platform.isAndroid) {
+    } else if (Platform.isIOS) {
       showModalBottomSheet(
           context: context,
           builder: (BuildContext ctx) {
@@ -54,8 +74,40 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
     if (picked != null)
       setState(() {
         fechaModificada = picked;
+        this.fechaEntrega = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          int.parse(this.widget.idPedido.substring(0, 2)),
+          fechaModificada.hour,
+          fechaModificada.minute,
+        );
         this._formKeyFecha.currentState.reset();
       });
+  }
+
+  Future<Null> agregarCliente() async {
+    if (this.validar()) {
+      await this.fs.collection('Pedidos/${this.widget.idPedido}/Clientes').add({
+        'CantidadProductos': 0,
+        'Compras': [],
+        'TotalPago': 0,
+        'NombreCliente': this.nombreCliente,
+        'LugarEntrega': this.lugarEntrega,
+        'RedSocial': this.redSocial,
+        'Descripcion': this.descripcion,
+        'FechaEntrega': this.fechaEntrega
+      }).then((documento) async {
+        await this
+            .fs
+            .document(
+                'Pedidos/${this.widget.idPedido}/Clientes/${documento.documentID}')
+            .updateData({'ID': documento.documentID})
+            .then((value) => print("Documento Actualizado!"))
+            .catchError((er) => print(er.toString()));
+      }).catchError((e) {
+        print(e.toString());
+      });
+    }
   }
 
   @override
@@ -63,6 +115,53 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Agregar Cliente'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Guardar'),
+            onPressed: () async {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CupertinoAlertDialog(
+                      title: Text('Agregando Cliente.'),
+                      content: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  });
+              await this.agregarCliente().then((value) {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              }).catchError((e) {
+                print(e.toString());
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return CupertinoAlertDialog(
+                        title: Text('Hubo un error:'),
+                        actions: <Widget>[
+                          CupertinoDialogAction(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('Cerrar'),
+                          )
+                        ],
+                        content: Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Center(
+                            child: Text(e.toString()),
+                          ),
+                        ),
+                      );
+                    });
+              });
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -81,6 +180,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                           keyboardType: TextInputType.text,
                           enabled: true,
                           autofocus: false,
+                          onSaved: (value) => this.nombreCliente = value,
                           validator: (value) => value.isEmpty
                               ? 'Debe de ingresar un nombre para el cliente'
                               : null,
@@ -96,6 +196,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                           keyboardType: TextInputType.text,
                           enabled: true,
                           autofocus: false,
+                          onSaved: (value) => this.lugarEntrega = value,
                           validator: (value) => value.isEmpty
                               ? 'Debe de ingresar un lugar de entrega'
                               : null,
@@ -111,6 +212,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                           keyboardType: TextInputType.text,
                           enabled: true,
                           autofocus: false,
+                          onSaved: (value) => this.redSocial = value,
                           validator: (value) => value.isEmpty
                               ? 'Debe de ingresar una red social'
                               : null,
@@ -128,6 +230,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                           enabled: true,
                           autofocus: false,
                           maxLines: 5,
+                          onSaved: (value) => this.descripcion = value,
                           validator: (value) => value.isEmpty
                               ? 'Debe de ingresar una descripción'
                               : null,
