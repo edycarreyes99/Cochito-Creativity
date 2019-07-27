@@ -6,6 +6,8 @@ import 'inventario.dart';
 import 'account.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io' show Platform;
 
 class HomePage extends StatefulWidget {
   HomePage({this.titulo});
@@ -35,10 +37,56 @@ class _HomePageState extends State<HomePage> {
     return snapshots;
   }
 
+  FirebaseMessaging _fcm = FirebaseMessaging();
+
+  void firebaseCloudMessaging_Listeners() {
+    if (Platform.isIOS) iOS_Permission();
+
+    _fcm.getToken().then((token) {
+      print(token);
+    });
+
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                content: ListTile(
+                  title: Text(message['notification']['title']),
+                  subtitle: Text(message['notification']['body']),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Ok'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+        );
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
+
+  void iOS_Permission() {
+    _fcm.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _fcm.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    firebaseCloudMessaging_Listeners();
     pedidoSub = this.getListaPedidos().listen((QuerySnapshot snapshot) {
       print("Cambio");
       snapshot.documentChanges.map((DocumentChange documento) =>
