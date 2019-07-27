@@ -4,6 +4,8 @@ import 'package:loveliacreativity/pages/account.dart';
 import 'pedidos.dart';
 import 'inventario.dart';
 import 'account.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   HomePage({this.titulo});
@@ -15,6 +17,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Firestore fs = Firestore.instance;
+
+  StreamSubscription<QuerySnapshot> pedidoSub;
+
+  Stream<QuerySnapshot> getListaPedidos({int offset, int limit}) {
+    Stream<QuerySnapshot> snapshots = this.fs.collection('Pedidos').snapshots();
+
+    if (offset != null) {
+      snapshots = snapshots.skip(offset);
+    }
+
+    if (limit != null) {
+      snapshots = snapshots.take(limit);
+    }
+
+    return snapshots;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    pedidoSub = this.getListaPedidos().listen((QuerySnapshot snapshot) {
+      print("Cambio");
+      snapshot.documentChanges.map((DocumentChange documento) =>
+          print("Tipo de cambio: " + documento.type.toString()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -42,11 +73,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           body: TabBarView(
-            children: <Widget>[
-              PedidosPage(),
-              InventarioPage(),
-              AccountPage()
-            ],
+            children: <Widget>[PedidosPage(), InventarioPage(), AccountPage()],
           )),
     );
   }
