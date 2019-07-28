@@ -4,6 +4,8 @@ import 'pages/home.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:async';
 
 void main() {
   Crashlytics.instance.enableInDevMode = true;

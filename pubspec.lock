@@ -106,6 +106,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.4+11"
+  firebase_in_app_messaging:
+    dependency: "direct dev"
+    description:
+      name: firebase_in_app_messaging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+1"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -139,6 +146,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.2+1"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -185,7 +199,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.12+1"
+    version: "0.6.0+17"
   matcher:
     dependency: transitive
     description:

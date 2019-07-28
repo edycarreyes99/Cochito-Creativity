@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:loveliacreativity/pages/account.dart';
 import 'pedidos.dart';
 import 'inventario.dart';
@@ -23,6 +24,22 @@ class _HomePageState extends State<HomePage> {
 
   StreamSubscription<QuerySnapshot> pedidoSub;
 
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  FirebaseMessaging _fcm = FirebaseMessaging();
+
+  Future onSelectNotification(String payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return new AlertDialog(
+          title: Text("PayLoad"),
+          content: Text("Payload : $payload"),
+        );
+      },
+    );
+  }
+
   Stream<QuerySnapshot> getListaPedidos({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots = this.fs.collection('Pedidos').snapshots();
 
@@ -37,8 +54,6 @@ class _HomePageState extends State<HomePage> {
     return snapshots;
   }
 
-  FirebaseMessaging _fcm = FirebaseMessaging();
-
   void firebaseCloudMessaging_Listeners() {
     if (Platform.isIOS) iOS_Permission();
 
@@ -49,7 +64,8 @@ class _HomePageState extends State<HomePage> {
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        showDialog(
+        showNotificationWithDefaultSound();
+        /*showDialog(
           context: context,
           builder: (context) => AlertDialog(
                 content: ListTile(
@@ -63,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-        );
+        );*/
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
@@ -82,6 +98,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future showNotificationWithDefaultSound() async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'your channel id', 'your channel name', 'your channel description',
+        importance: Importance.Max, priority: Priority.High);
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'New Post',
+      'How to Show Notification in Flutter',
+      platformChannelSpecifics,
+      payload: 'Default_Sound',
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -92,6 +124,15 @@ class _HomePageState extends State<HomePage> {
       snapshot.documentChanges.map((DocumentChange documento) =>
           print("Tipo de cambio: " + documento.type.toString()));
     });
+
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('logo');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
   }
 
   @override
