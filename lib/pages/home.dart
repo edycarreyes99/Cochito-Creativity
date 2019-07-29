@@ -64,7 +64,9 @@ class _HomePageState extends State<HomePage> {
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        showNotificationWithDefaultSound();
+        showNotificationWithDefaultSound(
+            message['notification']['title'].toString(),
+            message['notification']['body'].toString());
         /*showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -98,7 +100,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future showNotificationWithDefaultSound() async {
+  Future showNotificationWithDefaultSound(String title, String body) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
         importance: Importance.Max, priority: Priority.High);
@@ -107,10 +109,10 @@ class _HomePageState extends State<HomePage> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
       0,
-      'New Post',
-      'How to Show Notification in Flutter',
+      title,
+      body,
       platformChannelSpecifics,
-      payload: 'Default_Sound',
+      payload: 'Haz tocado la notificacion',
     );
   }
 

@@ -46,6 +46,107 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
         fecha.year.toString();
   }
 
+  Future<Null> seleccionarLugarEntrega(BuildContext context) async {
+    await showModalBottomSheet(
+        context: context,
+        builder: (BuildContext ctx) {
+          return Container(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  title: Text('Chinandega'),
+                  onTap: () {
+                    setState(() {
+                      this.lugarEntrega = 'Chinandega';
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: Icon(
+                    Icons.location_on,
+                    color: Colors.grey,
+                  ),
+                ),
+                ListTile(
+                  title: Text('Chichigalpa'),
+                  onTap: () {
+                    setState(() {
+                      this.lugarEntrega = 'Chichigalpa';
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: Icon(
+                    Icons.location_on,
+                    color: Colors.grey,
+                  ),
+                ),
+                ListTile(
+                  title: Text('León'),
+                  onTap: () {
+                    setState(() {
+                      this.lugarEntrega = 'León';
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: Icon(
+                    Icons.location_on,
+                    color: Colors.grey,
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  Future<Null> seleccionarRedSocial(BuildContext context) async {
+    await showModalBottomSheet(
+        context: context,
+        builder: (BuildContext ctx) {
+          return Container(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  title: Text('WhatsApp'),
+                  onTap: () {
+                    setState(() {
+                      this.redSocial = 'WhatsApp';
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.green[600],
+                  ),
+                ),
+                ListTile(
+                  title: Text('Facebook'),
+                  onTap: () {
+                    setState(() {
+                      this.redSocial = 'Facebook';
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.blue[800],
+                  ),
+                ),
+                ListTile(
+                  title: Text('Instagram'),
+                  onTap: () {
+                    setState(() {
+                      this.redSocial = 'Instagram';
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.pinkAccent,
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
   Future<Null> seleccionarHora(BuildContext context) async {
     TimeOfDay picked;
     if (Platform.isAndroid || Platform.isFuchsia) {
@@ -110,6 +211,29 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
     }
   }
 
+  Future<Null> mostrarErrorDeCampos(BuildContext context) async {
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: Text('Faltan Campos'),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Text(
+                'Debe de rellenar todos los campos antes de guardar el cliente.',
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Cerrar'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,46 +243,52 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
           FlatButton(
             child: Text('Guardar'),
             onPressed: () async {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return CupertinoAlertDialog(
-                      title: Text('Agregando Cliente.'),
-                      content: Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    );
-                  });
-              await this.agregarCliente().then((value) {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              }).catchError((e) {
-                print(e.toString());
+              if (this.validar()) {
                 showDialog(
                     context: context,
                     barrierDismissible: false,
                     builder: (BuildContext context) {
                       return CupertinoAlertDialog(
-                        title: Text('Hubo un error:'),
-                        actions: <Widget>[
-                          CupertinoDialogAction(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text('Cerrar'),
-                          )
-                        ],
+                        title: Text('Agregando Cliente.'),
                         content: Padding(
                           padding: const EdgeInsets.only(top: 20.0),
                           child: Center(
-                            child: Text(e.toString()),
+                            child: CircularProgressIndicator(),
                           ),
                         ),
                       );
                     });
-              });
+                await this.agregarCliente().then((value) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }).catchError((e) {
+                  print(e.toString());
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CupertinoAlertDialog(
+                          title: Text('Hubo un error:'),
+                          actions: <Widget>[
+                            CupertinoDialogAction(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('Cerrar'),
+                            )
+                          ],
+                          content: Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Center(
+                              child: Text(e.toString()),
+                            ),
+                          ),
+                        );
+                      });
+                });
+              } else if (this.lugarEntrega == null ||
+                  this.redSocial == null ||
+                  this.fechaEntrega == null) {
+                mostrarErrorDeCampos(context);
+              }
             },
           )
         ],
@@ -193,38 +323,6 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 20.0),
                         child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          enabled: true,
-                          autofocus: false,
-                          onSaved: (value) => this.lugarEntrega = value,
-                          validator: (value) => value.isEmpty
-                              ? 'Debe de ingresar un lugar de entrega'
-                              : null,
-                          decoration: InputDecoration(
-                            labelText: 'Lugar Entrega',
-                            hasFloatingPlaceholder: true,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          enabled: true,
-                          autofocus: false,
-                          onSaved: (value) => this.redSocial = value,
-                          validator: (value) => value.isEmpty
-                              ? 'Debe de ingresar una red social'
-                              : null,
-                          decoration: InputDecoration(
-                            labelText: 'Red Social',
-                            hasFloatingPlaceholder: true,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: TextFormField(
                           cursorColor: Colors.redAccent[100],
                           keyboardType: TextInputType.text,
                           enabled: true,
@@ -244,6 +342,50 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                   ),
                 ),
               ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: InkWell(
+                    onTap: () => this.seleccionarLugarEntrega(context),
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        hasFloatingPlaceholder: true,
+                        labelText: this.lugarEntrega == null
+                            ? 'Lugar de Entrega'
+                            : this.lugarEntrega,
+                        suffixIcon: Icon(Icons.arrow_drop_down),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: InkWell(
+                    onTap: () => this.seleccionarRedSocial(context),
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        hasFloatingPlaceholder: true,
+                        labelText: this.redSocial == null
+                            ? 'Red Social'
+                            : this.redSocial,
+                        suffixIcon: Icon(Icons.arrow_drop_down),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Form(
                 key: _formKeyFecha,
                 child: ConstrainedBox(
@@ -257,6 +399,9 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                           onTap: () => this.seleccionarHora(context),
                           child: InputDecorator(
                             decoration: InputDecoration(
+                              labelStyle: TextStyle(
+                                fontSize: 20.0,
+                              ),
                               hasFloatingPlaceholder: true,
                               labelText: this.fechaModificada == null
                                   ? 'Hora de Entrega'
