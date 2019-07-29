@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../classes/Producto.dart';
 import 'dart:async';
 import '../classes/Detalle-Pedido.dart';
+import 'dart:io' show Platform;
 
 class DetallesComprasPage extends StatefulWidget {
   DetallesComprasPage({this.titulo, this.detallePedido, this.idPedido});
@@ -83,6 +84,97 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
     });
   }
 
+  Future<void> eliminarClienteDePedido() async {
+    await this
+        .fs
+        .document('Pedidos/${this.widget.idPedido}/Clientes/${this.cliente.id}')
+        .delete()
+        .then((value) {
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }).catchError((e) {
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return Platform.isIOS
+                ? CupertinoAlertDialog(
+                    title: Text('¡Hubo un error!'),
+                    content: Text(e.toString()),
+                    actions: <Widget>[
+                      CupertinoButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'Cerrar',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      )
+                    ],
+                  )
+                : AlertDialog(
+                    title: Text('¡Hubo un error!'),
+                    content: Text(e.toString()),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text('Cerrar'),
+                      )
+                    ],
+                  );
+          });
+    });
+  }
+
+  Future<Null> mostrarConfirmacionEliminar(BuildContext context) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return Platform.isIOS
+              ? CupertinoAlertDialog(
+                  title: Text('Confirmar Eliminación'),
+                  content: Text(
+                      '¿Está seguro que desea eliminar este cliente del pedido?'),
+                  actions: <Widget>[
+                    CupertinoButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        'Cancelar',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                    CupertinoButton(
+                      onPressed: () => this.eliminarClienteDePedido(),
+                      child: Text(
+                        'Eliminar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    )
+                  ],
+                )
+              : AlertDialog(
+                  title: Text('Confirmar Eliminación'),
+                  content: Text(
+                      '¿Está seguro que desea eliminar este cliente del pedido?'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        'Cancelar',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () => this.eliminarClienteDePedido(),
+                      child: Text(
+                        'Eliminar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    )
+                  ],
+                );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +189,7 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () => null,
+            onPressed: () => mostrarConfirmacionEliminar(context),
           ),
         ],
       ),

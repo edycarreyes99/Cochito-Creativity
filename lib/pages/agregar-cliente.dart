@@ -193,8 +193,8 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
         'Compras': [],
         'TotalPago': 0,
         'NombreCliente': this.nombreCliente.toUpperCase(),
-        'LugarEntrega': this.lugarEntrega.toUpperCase(),
-        'RedSocial': this.redSocial.toUpperCase(),
+        'LugarEntrega': this.lugarEntrega,
+        'RedSocial': this.redSocial,
         'Descripcion': this.descripcion,
         'FechaEntrega': this.fechaEntrega
       }).then((documento) async {
