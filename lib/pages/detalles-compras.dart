@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -6,7 +5,8 @@ import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../classes/Producto.dart';
 import 'dart:async';
-import '../classes/Detalle-Pedido.dart';
+import 'dart:io' show Platform;
+import 'editar-cliente.dart';
 import 'dart:io' show Platform;
 
 class DetallesComprasPage extends StatefulWidget {
@@ -185,7 +185,17 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () => null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                Platform.isAndroid
+                    ? MaterialPageRoute(
+                        builder: (context) => EditarClientePage(),
+                      )
+                    : CupertinoPageRoute(
+                        builder: (context) => EditarClientePage()),
+              );
+            },
           ),
           IconButton(
             icon: Icon(Icons.delete),
