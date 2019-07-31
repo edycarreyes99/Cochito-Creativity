@@ -7,15 +7,19 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io' show Platform;
+import 'package:firebase_performance/firebase_performance.dart';
 
 void main() {
   Crashlytics.instance.enableInDevMode = true;
+  final Trace myTrace = FirebasePerformance.instance.newTrace("run_app");
+  myTrace.start();
 
   FlutterError.onError = (FlutterErrorDetails details) {
     Crashlytics.instance.onError(details);
   };
 
   runApp(MyApp());
+  myTrace.stop();
 }
 
 class MyApp extends StatefulWidget {
