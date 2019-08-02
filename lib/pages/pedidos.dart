@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -126,20 +128,22 @@ class _PedidosPageState extends State<PedidosPage> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add_shopping_cart,
-          color: Colors.white,
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AgregarPedidoPage(),
-            ),
-          );
-        },
-      ),
+      floatingActionButton: ! Platform.isAndroid
+          ? FloatingActionButton(
+              child: Icon(
+                Icons.add_shopping_cart,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AgregarPedidoPage(),
+                  ),
+                );
+              },
+            )
+          : null,
     );
   }
 }

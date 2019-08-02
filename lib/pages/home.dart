@@ -141,31 +141,92 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      child: Scaffold(
-          appBar: AppBar(
-            // Here we take the value from the MyHomePage object that was created by
-            // the App.build method, and use it to set our appbar title.
-            title: Text(widget.titulo),
-            bottom: TabBar(
-              tabs: <Widget>[
-                Tab(
-                  icon: Icon(Icons.shopping_cart),
-                  text: 'Pedidos',
+      child: !Platform.isAndroid
+          ? Scaffold(
+              appBar: AppBar(
+                // Here we take the value from the MyHomePage object that was created by
+                // the App.build method, and use it to set our appbar title.
+                title: Text(widget.titulo),
+                bottom: TabBar(
+                  tabs: <Widget>[
+                    Tab(
+                      icon: Icon(Icons.shopping_cart),
+                      text: 'Pedidos',
+                    ),
+                    Tab(
+                      icon: Icon(Icons.assignment),
+                      text: 'Inventario',
+                    ),
+                    Tab(
+                      icon: Icon(Icons.account_circle),
+                      text: 'Mi Cuenta',
+                    )
+                  ],
                 ),
-                Tab(
-                  icon: Icon(Icons.assignment),
-                  text: 'Inventario',
-                ),
-                Tab(
-                  icon: Icon(Icons.account_circle),
-                  text: 'Mi Cuenta',
-                )
-              ],
+              ),
+              body: TabBarView(
+                children: <Widget>[
+                  PedidosPage(),
+                  InventarioPage(),
+                  AccountPage()
+                ],
+              ),
+            )
+          : CupertinoTabScaffold(
+              tabBar: CupertinoTabBar(
+                // backgroundColor: Colors.redAccent[100],
+                activeColor: Colors.green,
+                inactiveColor: Colors.black,
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(CupertinoIcons.shopping_cart),
+                    title: Text('Pedidos'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(CupertinoIcons.book),
+                    title: Text('Inventario'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(CupertinoIcons.person),
+                    title: Text('Mi cuenta'),
+                  ),
+                ],
+              ),
+              tabBuilder: (BuildContext context, int index) {
+                return CupertinoTabView(
+                  builder: (BuildContext context) {
+                    return CupertinoPageScaffold(
+                      navigationBar: CupertinoNavigationBar(
+                        backgroundColor: Colors.redAccent[100],
+                        middle: index == 0
+                            ? Text('Pedidos')
+                            : index == 1
+                                ? Text('Inventario')
+                                : index == 2
+                                    ? Text('Mi Cuenta')
+                                    : Text('Lovelia Creativity'),
+                        trailing: index == 0
+                            ? GestureDetector(
+                                child: IconButton(
+                                  icon: Icon(CupertinoIcons.add),
+                                ),
+                              )
+                            : null,
+                      ),
+                      child: index == 0
+                          ? PedidosPage()
+                          : index == 1
+                              ? InventarioPage()
+                              : index == 2
+                                  ? AccountPage()
+                                  : Center(
+                                      child: Text('Lovelia Creativity'),
+                                    ),
+                    );
+                  },
+                );
+              },
             ),
-          ),
-          body: TabBarView(
-            children: <Widget>[PedidosPage(), InventarioPage(), AccountPage()],
-          )),
     );
   }
 }
