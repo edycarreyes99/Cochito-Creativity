@@ -63,32 +63,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
-        ? MaterialApp(
-            title: 'Lovelia Creativity',
-            theme: ThemeData(
-              primarySwatch: Colors.lightGreen,
-              primaryColor: Colors.redAccent[100],
-            ),
-            home: HomePage(
-              titulo: 'Lovelia Creativity',
-            ),
-            navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: analytics),
-            ],
-          )
-        : CupertinoApp(
-            title: 'LoveliaCreativity',
-            theme: CupertinoThemeData(
-              primaryColor: Colors.redAccent[100],
-              primaryContrastingColor: Colors.lightGreen,
-            ),
-            home: HomePage(
-              titulo: 'Lovelia Creativity',
-            ),
-            navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: analytics),
-            ],
-          );
+    return MaterialApp(
+      title: 'Lovelia Creativity',
+      theme: ThemeData(
+        primarySwatch: Colors.lightGreen,
+        primaryColor: Colors.redAccent[100],
+      ),
+      home: HomePage(
+        titulo: 'Lovelia Creativity',
+      ),
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+      ],
+    );
   }
 }
