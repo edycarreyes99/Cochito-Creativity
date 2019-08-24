@@ -190,10 +190,17 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                 context,
                 Platform.isAndroid
                     ? MaterialPageRoute(
-                        builder: (context) => EditarClientePage(),
+                        builder: (context) => EditarClientePage(
+                              idPedido: this.widget.idPedido,
+                              cliente: this.cliente,
+                            ),
                       )
                     : CupertinoPageRoute(
-                        builder: (context) => EditarClientePage()),
+                        builder: (context) => EditarClientePage(
+                              idPedido: this.widget.idPedido,
+                              cliente: this.cliente,
+                            ),
+                      ),
               );
             },
           ),
