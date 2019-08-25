@@ -128,22 +128,20 @@ class _PedidosPageState extends State<PedidosPage> {
                 );
               },
             ),
-      floatingActionButton: ! Platform.isAndroid
-          ? FloatingActionButton(
-              child: Icon(
-                Icons.add_shopping_cart,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AgregarPedidoPage(),
-                  ),
-                );
-              },
-            )
-          : null,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add_shopping_cart,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AgregarPedidoPage(),
+            ),
+          );
+        },
+      ),
     );
   }
 }

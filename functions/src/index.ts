@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 // import * as firebaseCredentials from '../serviceAccountKey.json';
 import * as admin from 'firebase-admin';
 import { Compra } from './Compra';
+// import { Producto } from './Producto';
 
 admin.initializeApp(functions.config().firebase);
 const fs = admin.firestore();
@@ -30,11 +31,31 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
     let comprasAntes: Compra[] = clienteAntes.Compras!;
     const comprasDespues: Compra[] = clienteDespues.Compras!;
     const dispositivosQuerySnapshot = await fs.collection('Dispositivos').get();
+    const inventarioQuerySnapshot = await fs.collection('Inventario').get();
+    const inventario = inventarioQuerySnapshot.docs.map((snap) => snap.data()!);
     const tokens = dispositivosQuerySnapshot.docs.map(snap => snap.id);
     const cliente = snapshot.before.data()!;
     const fechaEn = cliente.FechaEntrega.toDate();
 
     if (comprasDespues.length < comprasAntes.length) {
+        let totalPago = 0;
+        let cantidadProductos = 0;
+        comprasDespues.forEach(async (compra: Compra) => {
+            inventario.forEach(producto => {
+                if (producto.ID === compra.Producto) {
+                    totalPago += compra.Cantidad * producto.Precio;
+                }
+            });
+            cantidadProductos += compra.Cantidad;
+        });
+        await snapshot.before.ref.update({
+            'TotalPago': totalPago,
+            'CantidadProductos': cantidadProductos
+        }).then(documento => {
+            console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.before.data()!.NombreCliente}`);
+        }).catch(er => {
+            console.log(er);
+        });
         payload = {
             notification: {
                 title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
@@ -43,6 +64,24 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
             }
         };
     } else if (comprasAntes.length < comprasDespues.length) {
+        let totalPago = 0;
+        let cantidadProductos = 0;
+        comprasDespues.forEach(async (compra: Compra) => {
+            inventario.forEach(producto => {
+                if (producto.ID === compra.Producto) {
+                    totalPago += compra.Cantidad * producto.Precio;
+                }
+            });
+            cantidadProductos += compra.Cantidad;
+        });
+        await snapshot.before.ref.update({
+            'TotalPago': totalPago,
+            'CantidadProductos': cantidadProductos
+        }).then(documento => {
+            console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.before.data()!.NombreCliente}`);
+        }).catch(er => {
+            console.log(er);
+        });
         payload = {
             notification: {
                 title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
@@ -53,8 +92,26 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
     }
 
     if (comprasAntes.length === comprasDespues.length) {
-        comprasAntes.forEach((compra: Compra, index) => {
+        comprasAntes.forEach(async (compra: Compra, index) => {
             if (compra.Cantidad !== comprasDespues[index].Cantidad) {
+                let totalPago = 0;
+                let cantidadProductos = 0;
+                comprasDespues.forEach(async (compraa: Compra) => {
+                    inventario.forEach(producto => {
+                        if (producto.ID === compraa.Producto) {
+                            totalPago += compraa.Cantidad * producto.Precio;
+                        }
+                    });
+                    cantidadProductos += compraa.Cantidad;
+                });
+                await snapshot.before.ref.update({
+                    'TotalPago': totalPago,
+                    'CantidadProductos': cantidadProductos
+                }).then(documento => {
+                    console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.before.data()!.NombreCliente}`);
+                }).catch(er => {
+                    console.log(er);
+                });
                 payload = {
                     notification: {
                         title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
