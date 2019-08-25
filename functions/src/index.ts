@@ -104,6 +104,20 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
     return fcm.sendToDevice(tokens, payload);
 });
 
+exports.nuevoPedidoAgregado = functions.firestore.document('Pedidos/{pedidoId}').onCreate(async (snapshot) => {
+    const pedido = snapshot.data()!;
+    const dispositivosQuerySnapshot = await fs.collection('Dispositivos').get();
+    const tokens = dispositivosQuerySnapshot.docs.map(snap => snap.id);
+    const payload = {
+        notification: {
+            title: `!Nuevo Pedido agregado!`,
+            body: `Se ha abierto un nuevo pedido con fecha ${pedido.ID}`,
+            clickAction: 'FLUTTER_NOTIFICATION_CLICK'
+        }
+    };
+    return fcm.sendToDevice(tokens, payload);
+});
+
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 //
