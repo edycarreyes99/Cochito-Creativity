@@ -1,15 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccountKey.json");
+import * as functions from 'firebase-functions';
+import * as firebaseCredentials from '../serviceAccountKey.json';
+import * as admin from 'firebase-admin';
+
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(firebaseCredentials.default)
 });
 const fs = admin.firestore();
 const fcm = admin.messaging();
 exports.nuevoClienteAgregado = functions.firestore.document('Pedidos/{pedidoId}/Clientes/{clienteId}').onCreate(async (snapshot) => {
-    var cliente = snapshot.data();
+    let cliente = snapshot.data();
     var fechaEn = cliente.FechaEntrega.toDate();
     console.log(cliente.FechaEntrega.toDate().getDate())
     const dispositivosQuerySnapshot = await fs.collection('Dispositivos').get();
@@ -27,12 +26,12 @@ exports.nuevoClienteAgregado = functions.firestore.document('Pedidos/{pedidoId}/
 exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clientes/{clienteId}').onUpdate(async (snapshot)=>{
     var clienteAnterior = snapshot.after.data();
     var clienteDespues = snapshot.before.data();
-    fechaEntrega = clienteAnterior.FechaEntrega.toDate();
+    var fechaEntrega = clienteAnterior.FechaEntrega.toDate();
 });
+
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 //
-/*export const helloWorld = functions.https.onRequest((request, response) => {
-    response.send("Hello from Firebase!");
-});*/
-//# sourceMappingURL=index.js.map
+// export const helloWorld = functions.https.onRequest((request, response) => {
+//  response.send("Hello from Firebase!");
+// });
