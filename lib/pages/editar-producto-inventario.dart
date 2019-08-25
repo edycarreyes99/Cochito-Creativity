@@ -238,7 +238,7 @@ class _EditarProductoInventarioPageState
                             barrierDismissible: false,
                             builder: (BuildContext context) {
                               return CupertinoAlertDialog(
-                                title: Text('Subiendo Producto'),
+                                title: Text('¡Actializando Producto!'),
                                 content: Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: Center(
