@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loveliacreativity/classes/Compra.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../classes/Producto.dart';
@@ -26,6 +27,9 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
   StreamSubscription<QuerySnapshot> productosSub;
   StreamSubscription<DocumentSnapshot> clienteSub;
   DetallePedido cliente;
+  final _formKey = new GlobalKey<FormState>();
+
+  final nuevaCantidadPrducto = TextEditingController();
 
   Stream<QuerySnapshot> getListaDeInventario({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots =
@@ -84,6 +88,102 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
     });
   }
 
+  Future<void> actualizarCompraPedido(Compra compra) async {
+    final auxCompra = [];
+    this.cliente.compras.forEach((compraa) {
+      if (compraa == compra) {
+        compraa.cantidadProducto = int.parse(this.nuevaCantidadPrducto.text);
+        auxCompra.add(compraa.toMap());
+      } else {
+        auxCompra.add(compraa.toMap());
+      }
+    });
+    await this
+        .fs
+        .document('Pedidos/${this.widget.idPedido}/Clientes/${this.cliente.id}')
+        .updateData({'Compras': auxCompra}).then((value) {
+      print('Producto Actualizado!');
+    }).catchError((e) {
+      print(e);
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return Platform.isIOS
+                ? CupertinoAlertDialog(
+                    title: Text('¡Hubo un error!'),
+                    content: Text(e.toString()),
+                    actions: <Widget>[
+                      CupertinoButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'Cerrar',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      )
+                    ],
+                  )
+                : AlertDialog(
+                    title: Text('¡Hubo un error!'),
+                    content: Text(e.toString()),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text('Cerrar'),
+                      )
+                    ],
+                  );
+          });
+    });
+  }
+
+  Future<void> eliminarCompraPedido(Compra compra) async {
+    final auxCompra = [];
+    this.cliente.compras.forEach((compraa) {
+      if (compraa != compra) {
+        auxCompra.add(compraa.toMap());
+      }
+    });
+    await this
+        .fs
+        .document('Pedidos/${this.widget.idPedido}/Clientes/${this.cliente.id}')
+        .updateData({'Compras': auxCompra}).then((value) {
+      print('Producto Eliminado!');
+      Navigator.of(context).pop();
+    }).catchError((e) {
+      print(e);
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return Platform.isIOS
+                ? CupertinoAlertDialog(
+                    title: Text('¡Hubo un error!'),
+                    content: Text(e.toString()),
+                    actions: <Widget>[
+                      CupertinoButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'Cerrar',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      )
+                    ],
+                  )
+                : AlertDialog(
+                    title: Text('¡Hubo un error!'),
+                    content: Text(e.toString()),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text('Cerrar'),
+                      )
+                    ],
+                  );
+          });
+    });
+  }
+
   Future<void> eliminarClienteDePedido() async {
     await this
         .fs
@@ -123,6 +223,132 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                   );
           });
     });
+  }
+
+  Future<Null> mostrarDatosCompra(
+      BuildContext context, Producto producto, int indexCompra) async {
+    this.nuevaCantidadPrducto.value = TextEditingValue(
+        text: this.cliente.compras[indexCompra].cantidadProducto.toString());
+    await showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return Platform.isIOS
+              ? CupertinoAlertDialog(
+                  title: Text(producto.id),
+                  content: Form(
+                    key: _formKey,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          enabled: true,
+                          autofocus: false,
+                          controller: this.nuevaCantidadPrducto,
+                          validator: (value) {
+                            String texto = value.toString();
+                            switch (texto) {
+                              case '':
+                                return 'Debe de ingresar una cantidad válida';
+                                break;
+                              case '0':
+                                return 'Debe de ingresar una cantidad mayor a 0';
+                                break;
+                              default:
+                                return null;
+                                break;
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Cantidad',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    CupertinoButton(
+                      onPressed: () => this.eliminarClienteDePedido(),
+                      child: Text(
+                        'Eliminar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    CupertinoButton(
+                      onPressed: () {
+                        actualizarCompraPedido(
+                            this.cliente.compras[indexCompra]);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Actualizar',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                )
+              : AlertDialog(
+                  title: Text(producto.id),
+                  content: Form(
+                    key: _formKey,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          enabled: true,
+                          autofocus: false,
+                          controller: this.nuevaCantidadPrducto,
+                          validator: (value) {
+                            String texto = value.toString();
+                            switch (texto) {
+                              case '':
+                                return 'Debe de ingresar una cantidad válida';
+                                break;
+                              case '0':
+                                return 'Debe de ingresar una cantidad mayor a 0';
+                                break;
+                              default:
+                                return null;
+                                break;
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Cantidad',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () => this.eliminarCompraPedido(
+                          this.cliente.compras[indexCompra]),
+                      child: Text(
+                        'Eliminar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        actualizarCompraPedido(
+                            this.cliente.compras[indexCompra]);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Actualizar',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                );
+        });
   }
 
   Future<Null> mostrarConfirmacionEliminar(BuildContext context) async {
@@ -342,7 +568,14 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                   ),
                   itemBuilder: (BuildContext ctx, int index) {
                     return GestureDetector(
-                      onTap: () => print("Objeto Tocado"),
+                      onTap: () => this.mostrarDatosCompra(
+                          context,
+                          this.productos.firstWhere(
+                                (producto) =>
+                                    this.cliente.compras[index].producto ==
+                                    producto.id,
+                              ),
+                          index),
                       child: Container(
                           padding: EdgeInsets.all(3.0),
                           alignment: Alignment.topRight,

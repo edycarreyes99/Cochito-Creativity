@@ -10,13 +10,13 @@ import 'dart:io' show Platform;
 import 'package:firebase_performance/firebase_performance.dart';
 
 void main() {
-  Crashlytics.instance.enableInDevMode = true;
+  // Crashlytics.instance.enableInDevMode = true;
   final Trace myTrace = FirebasePerformance.instance.newTrace("run_app");
   myTrace.start();
 
-  FlutterError.onError = (FlutterErrorDetails details) {
+  /*FlutterError.onError = (FlutterErrorDetails details) {
     Crashlytics.instance.onError(details);
-  };
+  };*/
 
   runApp(MyApp());
   myTrace.stop();
