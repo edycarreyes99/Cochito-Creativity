@@ -30,26 +30,36 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
     const comprasDespues = clienteDespues.Compras;
     const dispositivosQuerySnapshot = await fs.collection('Dispositivos').get();
     const inventarioQuerySnapshot = await fs.collection('Inventario').get();
+    const clientesQuerySnapshot = await fs.collection(snapshot.after.ref.parent.path).get();
+    const clientes = clientesQuerySnapshot.docs.map(snap => snap.data());
     const inventario = inventarioQuerySnapshot.docs.map((snap) => snap.data());
     const tokens = dispositivosQuerySnapshot.docs.map(snap => snap.id);
-    const cliente = snapshot.before.data();
+    const cliente = snapshot.after.data();
     const fechaEn = cliente.FechaEntrega.toDate();
+    let totalPagoPorPedido = 0;
+    const cantidadClientesPorPedido = clientes.length;
+    let totalProductosPorPedido = 0;
+    clientes.forEach(clientee => {
+        totalPagoPorPedido += clientee.TotalPago;
+        totalProductosPorPedido += clientee.CantidadProductos;
+    });
+    await snapshot.after.ref.parent.parent.update({
+        'TotalPago': totalPagoPorPedido,
+        'CantidadClientes': cantidadClientesPorPedido,
+        'TotalProductos': totalProductosPorPedido
+    }).then((res) => {
+        console.log(`!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Actualizado!`);
+    }).catch(erro => {
+        console.log(erro);
+    });
     if (comprasDespues.length < comprasAntes.length) {
         let totalPago = 0;
         let cantidadProductos = 0;
-        comprasDespues.forEach(async (compra) => {
-            inventario.forEach(producto => {
-                if (producto.ID === compra.Producto) {
-                    totalPago += compra.Cantidad * producto.Precio;
-                }
-            });
-            cantidadProductos += compra.Cantidad;
-        });
-        await snapshot.before.ref.update({
+        await snapshot.after.ref.update({
             'TotalPago': totalPago,
             'CantidadProductos': cantidadProductos
-        }).then(documento => {
-            console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.before.data().NombreCliente}`);
+        }).then(async (documento) => {
+            console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.after.data().NombreCliente}`);
         }).catch(er => {
             console.log(er);
         });
@@ -72,10 +82,10 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
             });
             cantidadProductos += compra.Cantidad;
         });
-        await snapshot.before.ref.update({
+        await snapshot.after.ref.update({
             'TotalPago': totalPago,
             'CantidadProductos': cantidadProductos
-        }).then(documento => {
+        }).then(async (documento) => {
             console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.before.data().NombreCliente}`);
         }).catch(er => {
             console.log(er);
