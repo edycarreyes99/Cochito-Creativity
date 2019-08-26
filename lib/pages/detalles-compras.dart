@@ -645,7 +645,10 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
         onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SeleccionarProductoInventarioPage(),
+                builder: (context) => SeleccionarProductoInventarioPage(
+                      idPedido: this.widget.idPedido,
+                      cliente: this.cliente,
+                    ),
               ),
             ),
       ),

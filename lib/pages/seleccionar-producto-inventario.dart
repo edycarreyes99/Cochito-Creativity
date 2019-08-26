@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loveliacreativity/classes/Detalle-Pedido.dart';
 import 'editar-producto-inventario.dart';
 import 'dart:async';
 import '../classes/Producto.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io' show Platform;
+import '../classes/Compra.dart';
 
 class SeleccionarProductoInventarioPage extends StatefulWidget {
+  SeleccionarProductoInventarioPage({this.idPedido, this.cliente});
+
+  final String idPedido;
+  final DetallePedido cliente;
+
   @override
   _SeleccionarProductoInventarioPageState createState() =>
       _SeleccionarProductoInventarioPageState();
@@ -19,6 +27,9 @@ class _SeleccionarProductoInventarioPageState
   Firestore fs = Firestore.instance;
   StreamSubscription<QuerySnapshot> productosSub;
   FirebaseStorage storage = FirebaseStorage.instance;
+
+  TextEditingController cantidadProductoAgregar = new TextEditingController();
+  final _formKey = new GlobalKey<FormState>();
 
   int cantidadProductos = 0;
 
@@ -35,6 +46,164 @@ class _SeleccionarProductoInventarioPageState
     }
 
     return snapshots;
+  }
+
+  bool validar() {
+    final form = this._formKey.currentState;
+    final formDate = this._formKey.currentState;
+    if (form.validate() && formDate.validate()) {
+      form.save();
+      formDate.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<Null> agregarPedidoACliente(Producto producto) async {
+    if (this.validar() && this.cantidadProductoAgregar.text != '') {
+      final compras = [];
+      if (this.widget.cliente.compras.contains(producto.id)) {
+        this
+            .widget
+            .cliente
+            .compras
+            .firstWhere((compra) => producto.id == compra.producto)
+            .cantidadProducto += 1;
+      } else {
+        this.widget.cliente.compras.add(
+            Compra(int.parse(this.cantidadProductoAgregar.text), producto.id));
+      }
+      this.widget.cliente.compras.forEach((compra) {
+        compras.add(compra.toMap());
+      });
+      await this
+          .fs
+          .document('Pedidos/${this.widget.idPedido}/Clientes/${this.widget.cliente.id}')
+          .updateData({'Compras': compras});
+    }
+  }
+
+  Future<Null> seleccionarCantidadParaProducto(
+      BuildContext context, Producto producto, int indexProducto) async {
+    this.cantidadProductoAgregar.value = TextEditingValue(text: '0');
+    await showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return Platform.isIOS
+              ? CupertinoAlertDialog(
+                  title: Text(producto.id),
+                  content: Form(
+                    key: _formKey,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          enabled: true,
+                          autofocus: false,
+                          controller: this.cantidadProductoAgregar,
+                          validator: (value) {
+                            String texto = value.toString();
+                            switch (texto) {
+                              case '':
+                                return 'Debe de ingresar una cantidad válida';
+                                break;
+                              case '0':
+                                return 'Debe de ingresar una cantidad mayor a 0';
+                                break;
+                              default:
+                                return null;
+                                break;
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Cantidad',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    CupertinoButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        'Cancelar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    CupertinoButton(
+                      onPressed: () {
+                        agregarPedidoACliente(this.productos[indexProducto]);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Actualizar',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                )
+              : AlertDialog(
+                  title: Text(producto.id),
+                  content: Form(
+                    key: _formKey,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          enabled: true,
+                          autofocus: false,
+                          controller: this.cantidadProductoAgregar,
+                          validator: (value) {
+                            String texto = value.toString();
+                            switch (texto) {
+                              case '':
+                                return 'Debe de ingresar una cantidad válida';
+                                break;
+                              case '0':
+                                return 'Debe de ingresar una cantidad mayor a 0';
+                                break;
+                              default:
+                                return null;
+                                break;
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Cantidad',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        'Cancelar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        agregarPedidoACliente(this.productos[indexProducto]);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Actualizar',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                );
+        });
   }
 
   @override
@@ -74,7 +243,8 @@ class _SeleccionarProductoInventarioPageState
               itemBuilder: (BuildContext ctx, int index) {
                 return GestureDetector(
                   onTap: () {
-                    print('Tocado');
+                    this.seleccionarCantidadParaProducto(
+                        context, this.productos[index], index);
                   },
                   child: CachedNetworkImage(
                     imageUrl: this.productos[index].imagen,
