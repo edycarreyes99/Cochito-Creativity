@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loveliacreativity/classes/Compra.dart';
+import 'package:loveliacreativity/pages/seleccionar-producto-inventario.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../classes/Producto.dart';
@@ -641,7 +642,12 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
           Icons.add,
           color: Colors.white,
         ),
-        onPressed: () => {},
+        onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SeleccionarProductoInventarioPage(),
+              ),
+            ),
       ),
     );
   }
