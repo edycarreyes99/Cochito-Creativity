@@ -23,6 +23,12 @@ exports.nuevoClienteAgregado = functions.firestore.document('Pedidos/{pedidoId}/
     };
     return fcm.sendToDevice(tokens, payload);
 });
+
+exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clientes/{clienteId}').onUpdate(async (snapshot)=>{
+    var clienteAnterior = snapshot.after.data();
+    var clienteDespues = snapshot.before.data();
+    fechaEntrega = clienteAnterior.FechaEntrega.toDate();
+});
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 //

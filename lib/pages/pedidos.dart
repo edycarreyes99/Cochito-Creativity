@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -83,7 +85,7 @@ class _PedidosPageState extends State<PedidosPage> {
                             color: this.pedidos[i].getEstadoPedido() ==
                                     'Pendiente'
                                 ? Colors.orange
-                                : this.pedidos[i].getEstadoPedido() == 'Agotado'
+                                : this.pedidos[i].getEstadoPedido() == 'Cerrado'
                                     ? Colors.red
                                     : Colors.green,
                           ),

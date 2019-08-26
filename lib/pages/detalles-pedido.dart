@@ -37,6 +37,20 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
     return snapshots;
   }
 
+  Future<Null> realizarAccionPedido(String tipoAccion) async {
+    switch (tipoAccion) {
+      case 'Cerrar':
+        print('Caso: Cerrar');
+        break;
+      case 'Cancelar':
+        print('Caso: Cancelar');
+        break;
+      case 'Eliminar':
+        print('Caso: Eliminar');
+        break;
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -69,7 +83,43 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
       appBar: AppBar(
         title: Text(this.widget.titulo),
         actions: <Widget>[
-          Icon(Icons.more_vert),
+          PopupMenuButton<String>(
+            onSelected: (String result) {
+              realizarAccionPedido(result);
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: 'Entregar',
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                      title: Text('Confirmar Entrega'),
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Cerrar',
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.assignment_late,
+                        color: Colors.blue,
+                      ),
+                      title: Text('Cerrar Pedido'),
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Eliminar',
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      title: Text('Eliminar Pedido'),
+                    ),
+                  ),
+                ],
+          )
         ],
       ),
       body: this.detallesPedidos.length == 0

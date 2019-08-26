@@ -24,6 +24,9 @@ class Compra {
     return map;
   }
 
+  set cantidadProducto(int cantidadProducto) =>
+      this._cantidadProducto = cantidadProducto;
+
   Compra.fromMap(Map<String, dynamic> map) {
     this._producto = map['Producto'];
     this._cantidadProducto = map['Cantidad'];
