@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:loveliacreativity/pages/account.dart';
+import 'package:loveliacreativity/services/auth.dart';
 import 'pedidos.dart';
 import 'inventario.dart';
 import 'account.dart';
@@ -11,9 +12,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io' show Platform;
 
 class HomePage extends StatefulWidget {
-  HomePage({this.titulo});
+  HomePage({Key key, this.titulo, this.auth, this.userId, this.onSignedOut})
+      : super(key: key);
 
   final String titulo;
+  final BaseAuth auth;
+  final VoidCallback onSignedOut;
+  final String userId;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -164,7 +169,15 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: TabBarView(
-          children: <Widget>[PedidosPage(), InventarioPage(), AccountPage()],
+          children: <Widget>[
+            PedidosPage(),
+            InventarioPage(),
+            AccountPage(
+              auth: widget.auth,
+              userId: widget.userId,
+              onSignedOut: widget.onSignedOut,
+            )
+          ],
         ),
       ),
     );

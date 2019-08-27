@@ -16,7 +16,7 @@ exports.nuevoClienteAgregado = functions.firestore.document('Pedidos/{pedidoId}/
     const payload = {
         notification: {
             title: `!Nuevo Cliente agregado!`,
-            body: `Se ha agregado el cliente ${cliente.NombreCliente} al pedido con fecha ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()}`,
+            body: `Se ha agregado el cliente ${cliente.NombreCliente} al pedido con fecha ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()}.`,
             clickAction: 'FLUTTER_NOTIFICATION_CLICK'
         }
     };

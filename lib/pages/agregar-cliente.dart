@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 
 class AgregarClientePage extends StatefulWidget {
-  AgregarClientePage({this.idPedido});
+  AgregarClientePage({Key key, this.idPedido}) : super(key: key);
 
   final String idPedido;
 

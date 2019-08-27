@@ -5,6 +5,8 @@ import 'dart:io' show Platform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AgregarPedidoPage extends StatefulWidget {
+  AgregarPedidoPage({Key key}) : super(key: key);
+
   @override
   _AgregarPedidoPageState createState() => _AgregarPedidoPageState();
 }

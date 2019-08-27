@@ -9,7 +9,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 
 class AgregarProductoInventarioPage extends StatefulWidget {
-  AgregarProductoInventarioPage({this.cantidadProductosInventario});
+  AgregarProductoInventarioPage({Key key, this.cantidadProductosInventario})
+      : super(key: key);
 
   final int cantidadProductosInventario;
 
@@ -33,11 +34,11 @@ class _AgregarProductoInventarioPageState
   FirebaseStorage storage = FirebaseStorage.instance;
 
   Stream<QuerySnapshot> inventarioRef =
-      Firestore.instance.collection('Inventario/').snapshots();
+  Firestore.instance.collection('Inventario/').snapshots();
 
   Stream<QuerySnapshot> getListaDeInventario({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots =
-        Firestore.instance.collection('Inventario/').snapshots();
+    Firestore.instance.collection('Inventario/').snapshots();
 
     if (offset != null) {
       snapshots = snapshots.skip(offset);
@@ -67,10 +68,10 @@ class _AgregarProductoInventarioPageState
       String extension = context.extension(filename);
 
       StorageReference storageReference =
-          storage.ref().child('Inventario/${this.generarId()}');
+      storage.ref().child('Inventario/${this.generarId()}');
 
       StorageUploadTask uploadTask =
-          storageReference.putFile(this._imagenProducto);
+      storageReference.putFile(this._imagenProducto);
 
       StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
 
@@ -154,22 +155,24 @@ class _AgregarProductoInventarioPageState
                                     ListTile(
                                       leading: Icon(Icons.photo_camera),
                                       title: Text('Tomar foto'),
-                                      onTap: () => this
-                                          .tomarImagen('Camara')
-                                          .then((value) =>
+                                      onTap: () =>
+                                          this
+                                              .tomarImagen('Camara')
+                                              .then((value) =>
                                               Navigator.of(ctx).pop())
-                                          .catchError(
-                                              (e) => print(e.toString())),
+                                              .catchError(
+                                                  (e) => print(e.toString())),
                                     ),
                                     ListTile(
                                       leading: Icon(Icons.photo_library),
                                       title: Text('Escoger de la Galeria'),
-                                      onTap: () => this
-                                          .tomarImagen('Galeria')
-                                          .then((value) =>
+                                      onTap: () =>
+                                          this
+                                              .tomarImagen('Galeria')
+                                              .then((value) =>
                                               Navigator.of(ctx).pop())
-                                          .catchError(
-                                              (e) => print(e.toString())),
+                                              .catchError(
+                                                  (e) => print(e.toString())),
                                     ),
                                   ],
                                 ),
@@ -181,11 +184,11 @@ class _AgregarProductoInventarioPageState
                         radius: 50.0,
                         child: this._imagenProducto == null
                             ? Center(
-                                child: Icon(
-                                  Icons.photo,
-                                  size: 40.0,
-                                ),
-                              )
+                          child: Icon(
+                            Icons.photo,
+                            size: 40.0,
+                          ),
+                        )
                             : null,
                         backgroundImage: this._imagenProducto == null
                             ? null
@@ -212,7 +215,10 @@ class _AgregarProductoInventarioPageState
                 key: _formKey,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      maxWidth: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.7),
                   child: Column(
                     children: <Widget>[
                       Padding(
@@ -233,11 +239,12 @@ class _AgregarProductoInventarioPageState
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           autofocus: false,
-                          validator: (value) => value.isEmpty
+                          validator: (value) =>
+                          value.isEmpty
                               ? 'Debe de ingresar un precio para el producto'
                               : null,
                           onSaved: (value) =>
-                              this._precioProducto = double.parse(value),
+                          this._precioProducto = double.parse(value),
                           decoration: InputDecoration(
                             prefix: Text('C\$'),
                             suffix: IconButton(
@@ -312,7 +319,7 @@ class _AgregarProductoInventarioPageState
                                       ],
                                       content: Padding(
                                         padding:
-                                            const EdgeInsets.only(top: 20.0),
+                                        const EdgeInsets.only(top: 20.0),
                                         child: Center(
                                           child: Text(e.toString()),
                                         ),

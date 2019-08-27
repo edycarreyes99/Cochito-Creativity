@@ -10,6 +10,8 @@ import 'detalles-pedido.dart';
 import 'agregar-pedido.dart';
 
 class PedidosPage extends StatefulWidget {
+  PedidosPage({Key key}) : super(key: key);
+
   @override
   _PedidosPageState createState() => _PedidosPageState();
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loveliacreativity/classes/Compra.dart';
+import 'package:loveliacreativity/pages/seleccionar-producto-inventario.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../classes/Producto.dart';
@@ -11,7 +13,8 @@ import 'editar-cliente.dart';
 import 'dart:io' show Platform;
 
 class DetallesComprasPage extends StatefulWidget {
-  DetallesComprasPage({this.titulo, this.detallePedido, this.idPedido});
+  DetallesComprasPage({Key key, this.titulo, this.detallePedido, this.idPedido})
+      : super(key: key);
 
   final String titulo;
   final DetallePedido detallePedido;
@@ -557,53 +560,58 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 200.0,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                child: GridView.builder(
-                  itemCount: this.cliente.compras.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                  ),
-                  itemBuilder: (BuildContext ctx, int index) {
-                    return GestureDetector(
-                      onTap: () => this.mostrarDatosCompra(
-                          context,
-                          this.productos.firstWhere(
-                                (producto) =>
-                                    this.cliente.compras[index].producto ==
-                                    producto.id,
-                              ),
-                          index),
-                      child: Container(
-                          padding: EdgeInsets.all(3.0),
-                          alignment: Alignment.topRight,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(this
-                                      .productos
-                                      .firstWhere((producto) =>
+            this.cliente.compras.length != 0
+                ? SizedBox(
+                    height: 600.0,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                      child: GridView.builder(
+                        itemCount: this.cliente.compras.length,
+                        scrollDirection: Axis.horizontal,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                        ),
+                        itemBuilder: (BuildContext ctx, int index) {
+                          return GestureDetector(
+                            onTap: () => this.mostrarDatosCompra(
+                                context,
+                                this.productos.firstWhere(
+                                      (producto) =>
                                           this
                                               .cliente
                                               .compras[index]
                                               .producto ==
-                                          producto.id)
-                                      .imagen),
-                                  fit: BoxFit.cover)),
-                          child: CircleAvatar(
-                            child: Text(
-                              this
-                                  .cliente
-                                  .compras[index]
-                                  .cantidadProducto
-                                  .toString(),
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                            backgroundColor: Colors.redAccent[100],
-                          ) /*CachedNetworkImage(
+                                          producto.id,
+                                    ),
+                                index),
+                            child: Container(
+                                padding: EdgeInsets.all(3.0),
+                                alignment: Alignment.topRight,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(this
+                                            .productos
+                                            .firstWhere((producto) =>
+                                                this
+                                                    .cliente
+                                                    .compras[index]
+                                                    .producto ==
+                                                producto.id)
+                                            .imagen),
+                                        fit: BoxFit.cover)),
+                                child: CircleAvatar(
+                                  child: Text(
+                                    this
+                                        .cliente
+                                        .compras[index]
+                                        .cantidadProducto
+                                        .toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.redAccent[100],
+                                ) /*CachedNetworkImage(
                             imageUrl: this
                                 .productos
                                 .firstWhere((producto) =>
@@ -627,12 +635,18 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),*/
-                          ),
-                    );
-                  },
-                ),
-              ),
-            )
+                                ),
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.only(top: 30),
+                    child: Center(
+                      child: Text('Aun no hay Productos'),
+                    ),
+                  ),
           ],
         ),
       ),
@@ -641,7 +655,15 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
           Icons.add,
           color: Colors.white,
         ),
-        onPressed: () => {},
+        onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SeleccionarProductoInventarioPage(
+                      idPedido: this.widget.idPedido,
+                      cliente: this.cliente,
+                    ),
+              ),
+            ),
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'dart:io' show Platform;
 import 'package:loveliacreativity/classes/Detalle-Pedido.dart';
 
 class EditarClientePage extends StatefulWidget {
-  EditarClientePage({this.idPedido, this.cliente});
+  EditarClientePage({Key key, this.idPedido, this.cliente}) : super(key: key);
 
   final String idPedido;
   final DetallePedido cliente;
@@ -254,12 +254,17 @@ class _EditarClientePageState extends State<EditarClientePage> {
   @override
   void initState() {
     // TODO: implement initState
-    this.nombreCliente.value = TextEditingValue(text: this.widget.cliente.nombreCliente);
-    this.lugarEntrega.value = TextEditingValue(text: this.widget.cliente.lugarEntrega);
-    this.redSocial.value = TextEditingValue(text: this.widget.cliente.redSocial);
-    this.descripcion.value = TextEditingValue(text: this.widget.cliente.descripcion);
+    this.nombreCliente.value =
+        TextEditingValue(text: this.widget.cliente.nombreCliente);
+    this.lugarEntrega.value =
+        TextEditingValue(text: this.widget.cliente.lugarEntrega);
+    this.redSocial.value =
+        TextEditingValue(text: this.widget.cliente.redSocial);
+    this.descripcion.value =
+        TextEditingValue(text: this.widget.cliente.descripcion);
     this.fechaEntrega = this.widget.cliente.fechaEntrega;
-    this.fechaModificada = TimeOfDay.fromDateTime(this.widget.cliente.fechaEntrega.toLocal());
+    this.fechaModificada =
+        TimeOfDay.fromDateTime(this.widget.cliente.fechaEntrega.toLocal());
     super.initState();
   }
 
