@@ -91,7 +91,7 @@ class _SeleccionarProductoInventarioPageState
 
   Future<Null> seleccionarCantidadParaProducto(
       BuildContext context, Producto producto, int indexProducto) async {
-    this.cantidadProductoAgregar.value = TextEditingValue(text: '0');
+    this.cantidadProductoAgregar.value = TextEditingValue(text: '1');
     await showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -143,6 +143,7 @@ class _SeleccionarProductoInventarioPageState
                     CupertinoButton(
                       onPressed: () {
                         agregarPedidoACliente(this.productos[indexProducto]);
+                        Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       },
                       child: Text(
@@ -199,6 +200,7 @@ class _SeleccionarProductoInventarioPageState
                     FlatButton(
                       onPressed: () {
                         agregarPedidoACliente(this.productos[indexProducto]);
+                        Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       },
                       child: Text(
