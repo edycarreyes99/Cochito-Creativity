@@ -63,13 +63,17 @@ class _SeleccionarProductoInventarioPageState
   Future<Null> agregarPedidoACliente(Producto producto) async {
     if (this.validar() && this.cantidadProductoAgregar.text != '') {
       final compras = [];
-      if (this.widget.cliente.compras.contains(producto.id)) {
+      int coincidencias = 0;
+      this.widget.cliente.compras.forEach((compra) {
+        if (compra.producto == producto.id) coincidencias = coincidencias + 1;
+      });
+      if (coincidencias != 0) {
         this
             .widget
             .cliente
             .compras
             .firstWhere((compra) => producto.id == compra.producto)
-            .cantidadProducto += 1;
+            .cantidadProducto += int.parse(this.cantidadProductoAgregar.text);
       } else {
         this.widget.cliente.compras.add(
             Compra(int.parse(this.cantidadProductoAgregar.text), producto.id));
@@ -79,7 +83,8 @@ class _SeleccionarProductoInventarioPageState
       });
       await this
           .fs
-          .document('Pedidos/${this.widget.idPedido}/Clientes/${this.widget.cliente.id}')
+          .document(
+              'Pedidos/${this.widget.idPedido}/Clientes/${this.widget.cliente.id}')
           .updateData({'Compras': compras});
     }
   }
