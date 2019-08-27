@@ -13,7 +13,8 @@ import 'editar-cliente.dart';
 import 'dart:io' show Platform;
 
 class DetallesComprasPage extends StatefulWidget {
-  DetallesComprasPage({this.titulo, this.detallePedido, this.idPedido});
+  DetallesComprasPage({Key key, this.titulo, this.detallePedido, this.idPedido})
+      : super(key: key);
 
   final String titulo;
   final DetallePedido detallePedido;

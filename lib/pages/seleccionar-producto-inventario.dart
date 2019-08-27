@@ -11,7 +11,8 @@ import 'dart:io' show Platform;
 import '../classes/Compra.dart';
 
 class SeleccionarProductoInventarioPage extends StatefulWidget {
-  SeleccionarProductoInventarioPage({this.idPedido, this.cliente});
+  SeleccionarProductoInventarioPage({Key key, this.idPedido, this.cliente})
+      : super(key: key);
 
   final String idPedido;
   final DetallePedido cliente;

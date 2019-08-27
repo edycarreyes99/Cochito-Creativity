@@ -10,7 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 
 class EditarProductoInventarioPage extends StatefulWidget {
-  EditarProductoInventarioPage({this.producto});
+  EditarProductoInventarioPage({Key key, this.producto}) : super(key: key);
 
   final Producto producto;
 

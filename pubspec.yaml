@@ -26,6 +26,7 @@ dependencies:
   firebase_crashlytics: ^0.0.4+11
   firebase_messaging: ^5.1.2
   firebase_storage: ^3.0.3
+  firebase_auth: ^0.14.0+4
   image_picker: ^0.6.0+17
   cached_network_image: ^1.1.0
   googleapis: ^0.54.0

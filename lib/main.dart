@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:loveliacreativity/pages/router.dart';
 import 'pages/home.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -8,15 +9,16 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io' show Platform;
 import 'package:firebase_performance/firebase_performance.dart';
+import 'package:loveliacreativity/services/auth.dart';
 
 void main() {
-  Crashlytics.instance.enableInDevMode = true;
+  // Crashlytics.instance.enableInDevMode = true;
   final Trace myTrace = FirebasePerformance.instance.newTrace("run_app");
   myTrace.start();
 
-  FlutterError.onError = (FlutterErrorDetails details) {
+  /*FlutterError.onError = (FlutterErrorDetails details) {
     Crashlytics.instance.onError(details);
-  };
+  };*/
 
   runApp(MyApp());
   myTrace.stop();
@@ -63,15 +65,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      MaterialApp(
+    return MaterialApp(
       title: 'Lovelia Creativity',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
         primaryColor: Colors.redAccent[100],
       ),
-      home: HomePage(
-        titulo: 'Lovelia Creativity',
+      home: RouterPage(
+        auth: new Auth(),
       ),
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: analytics),

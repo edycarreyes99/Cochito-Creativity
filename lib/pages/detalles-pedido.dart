@@ -11,7 +11,7 @@ import 'agregar-cliente.dart';
 import 'dart:io' show Platform;
 
 class DetallesPedidoPage extends StatefulWidget {
-  DetallesPedidoPage({this.titulo});
+  DetallesPedidoPage({Key key, this.titulo}) : super(key: key);
 
   final String titulo;
 
