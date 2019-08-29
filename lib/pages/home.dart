@@ -121,6 +121,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<Null> realizarAccionPedido(String tipoAccion) async {
+    switch (tipoAccion) {
+      case 'Cerrar Sesion':
+        try {
+          await widget.auth.signOut();
+          widget.onSignedOut();
+        } catch (e) {
+          print(e);
+        }
+        break;
+      default:
+        print("Esta opcion no estaba registrada en el menu");
+        break;
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -145,12 +161,36 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.titulo),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: (String result) {
+                realizarAccionPedido(result);
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      value: 'Cerrar Sesion',
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.exit_to_app,
+                          color: Colors.red,
+                        ),
+                        title: Text(
+                          'Cerrar Sesión',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+            ),
+          ],
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
@@ -160,11 +200,11 @@ class _HomePageState extends State<HomePage> {
               Tab(
                 icon: Icon(Icons.assignment),
                 text: 'Inventario',
-              ),
+              ), /*
               Tab(
                 icon: Icon(Icons.account_circle),
                 text: 'Mi Cuenta',
-              )
+              )*/
             ],
           ),
         ),
@@ -172,11 +212,11 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             PedidosPage(),
             InventarioPage(),
-            AccountPage(
+            /*AccountPage(
               auth: widget.auth,
               userId: widget.userId,
               onSignedOut: widget.onSignedOut,
-            )
+            )*/
           ],
         ),
       ),
