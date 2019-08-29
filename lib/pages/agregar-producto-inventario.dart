@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -34,11 +35,11 @@ class _AgregarProductoInventarioPageState
   FirebaseStorage storage = FirebaseStorage.instance;
 
   Stream<QuerySnapshot> inventarioRef =
-  Firestore.instance.collection('Inventario/').snapshots();
+      Firestore.instance.collection('Inventario/').snapshots();
 
   Stream<QuerySnapshot> getListaDeInventario({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots =
-    Firestore.instance.collection('Inventario/').snapshots();
+        Firestore.instance.collection('Inventario/').snapshots();
 
     if (offset != null) {
       snapshots = snapshots.skip(offset);
@@ -68,10 +69,10 @@ class _AgregarProductoInventarioPageState
       String extension = context.extension(filename);
 
       StorageReference storageReference =
-      storage.ref().child('Inventario/${this.generarId()}');
+          storage.ref().child('Inventario/${this.generarId()}');
 
       StorageUploadTask uploadTask =
-      storageReference.putFile(this._imagenProducto);
+          storageReference.putFile(this._imagenProducto);
 
       StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
 
@@ -85,21 +86,38 @@ class _AgregarProductoInventarioPageState
     }
   }
 
+  Future<File> recortarImagen(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: imageFile.path,
+      ratioX: 1.0,
+      ratioY: 1.0,
+      maxWidth: 512,
+      maxHeight: 512,
+    );
+    return croppedFile;
+  }
+
   Future tomarImagen(String lugar) async {
     switch (lugar) {
       case 'Camara':
-        var image = await ImagePicker.pickImage(source: ImageSource.camera);
+        var image = await ImagePicker.pickImage(source: ImageSource.camera)
+            .then((imagen) async => await this.recortarImagen(imagen))
+            .catchError((e) => print(e));
 
         setState(() {
           _imagenProducto = image;
         });
+
         break;
       case 'Galeria':
-        var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+        var image = await ImagePicker.pickImage(source: ImageSource.gallery)
+            .then((imagen) async => await this.recortarImagen(imagen))
+            .catchError((e) => print(e));
 
         setState(() {
           _imagenProducto = image;
         });
+
         break;
       default:
         print("Metodo para escoger imagen no definido, intente nuevamente");
@@ -155,24 +173,22 @@ class _AgregarProductoInventarioPageState
                                     ListTile(
                                       leading: Icon(Icons.photo_camera),
                                       title: Text('Tomar foto'),
-                                      onTap: () =>
-                                          this
-                                              .tomarImagen('Camara')
-                                              .then((value) =>
+                                      onTap: () => this
+                                          .tomarImagen('Camara')
+                                          .then((value) =>
                                               Navigator.of(ctx).pop())
-                                              .catchError(
-                                                  (e) => print(e.toString())),
+                                          .catchError(
+                                              (e) => print(e.toString())),
                                     ),
                                     ListTile(
                                       leading: Icon(Icons.photo_library),
                                       title: Text('Escoger de la Galeria'),
-                                      onTap: () =>
-                                          this
-                                              .tomarImagen('Galeria')
-                                              .then((value) =>
+                                      onTap: () => this
+                                          .tomarImagen('Galeria')
+                                          .then((value) =>
                                               Navigator.of(ctx).pop())
-                                              .catchError(
-                                                  (e) => print(e.toString())),
+                                          .catchError(
+                                              (e) => print(e.toString())),
                                     ),
                                   ],
                                 ),
@@ -184,11 +200,11 @@ class _AgregarProductoInventarioPageState
                         radius: 50.0,
                         child: this._imagenProducto == null
                             ? Center(
-                          child: Icon(
-                            Icons.photo,
-                            size: 40.0,
-                          ),
-                        )
+                                child: Icon(
+                                  Icons.photo,
+                                  size: 40.0,
+                                ),
+                              )
                             : null,
                         backgroundImage: this._imagenProducto == null
                             ? null
@@ -215,10 +231,7 @@ class _AgregarProductoInventarioPageState
                 key: _formKey,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxWidth: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.7),
+                      maxWidth: MediaQuery.of(context).size.width * 0.7),
                   child: Column(
                     children: <Widget>[
                       Padding(
@@ -239,12 +252,11 @@ class _AgregarProductoInventarioPageState
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           autofocus: false,
-                          validator: (value) =>
-                          value.isEmpty
+                          validator: (value) => value.isEmpty
                               ? 'Debe de ingresar un precio para el producto'
                               : null,
                           onSaved: (value) =>
-                          this._precioProducto = double.parse(value),
+                              this._precioProducto = double.parse(value),
                           decoration: InputDecoration(
                             prefix: Text('C\$'),
                             suffix: IconButton(
@@ -319,7 +331,7 @@ class _AgregarProductoInventarioPageState
                                       ],
                                       content: Padding(
                                         padding:
-                                        const EdgeInsets.only(top: 20.0),
+                                            const EdgeInsets.only(top: 20.0),
                                         child: Center(
                                           child: Text(e.toString()),
                                         ),

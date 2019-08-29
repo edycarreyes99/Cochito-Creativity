@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class EditarProductoInventarioPage extends StatefulWidget {
   EditarProductoInventarioPage({Key key, this.producto}) : super(key: key);
@@ -67,21 +68,38 @@ class _EditarProductoInventarioPageState
     }
   }
 
+  Future<File> recortarImagen(File imageFile) async {
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: imageFile.path,
+      ratioX: 1.0,
+      ratioY: 1.0,
+      maxWidth: 512,
+      maxHeight: 512,
+    );
+    return croppedFile;
+  }
+
   Future tomarImagen(String lugar) async {
     switch (lugar) {
       case 'Camara':
-        var image = await ImagePicker.pickImage(source: ImageSource.camera);
+        var image = await ImagePicker.pickImage(source: ImageSource.camera)
+            .then((imagen) async => await this.recortarImagen(imagen))
+            .catchError((e) => print(e));
 
         setState(() {
           _imagenProducto = image;
         });
+
         break;
       case 'Galeria':
-        var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+        var image = await ImagePicker.pickImage(source: ImageSource.gallery)
+            .then((imagen) async => await this.recortarImagen(imagen))
+            .catchError((e) => print(e));
 
         setState(() {
           _imagenProducto = image;
         });
+
         break;
       default:
         print("Metodo para escoger imagen no definido, intente nuevamente");
@@ -238,7 +256,7 @@ class _EditarProductoInventarioPageState
                             barrierDismissible: false,
                             builder: (BuildContext context) {
                               return CupertinoAlertDialog(
-                                title: Text('¡Actializando Producto!'),
+                                title: Text('¡Actualizando Producto!'),
                                 content: Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: Center(
