@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loveliacreativity/pages/editar-producto-inventario.dart';
+import 'package:loveliacreativity/pages/ver-producto-inventario.dart';
 import 'agregar-producto-inventario.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'editar-producto-inventario.dart';
@@ -207,7 +208,18 @@ class _InventarioPageState extends State<InventarioPage> {
                                       color: Colors.blue,
                                     ),
                                   ),
-                                  onTap: () => null,
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            VerProductoInventarioPage(
+                                              producto: this.productos[index],
+                                            ),
+                                      ),
+                                    );
+                                  },
                                 ),
                                 ListTile(
                                   leading: Icon(
