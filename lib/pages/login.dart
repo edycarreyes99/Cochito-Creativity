@@ -51,11 +51,49 @@ class _LoginPageState extends State<LoginPage> {
 
   void iniciarSesion() async {
     if (validar()) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('Iniciando Sesión'),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          });
       try {
-        String userEmail = await widget.servicio
-            .signIn(_email, _password)
-            .then((user) => user.email)
-            .catchError((e) => print(e));
+        String userEmail =
+            await widget.servicio.signIn(_email, _password).then((user) {
+          Navigator.of(context).pop();
+          return user.email;
+        }).catchError((e) {
+          Navigator.of(context).pop();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CupertinoAlertDialog(
+                  title: Text('Hubo un error:'),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Cerrar'),
+                    )
+                  ],
+                  content: Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Center(
+                      child: Text(e.toString()),
+                    ),
+                  ),
+                );
+              });
+          print(e);
+        });
         print('Ha Iniciado sesion como: $userEmail');
         widget.onIniciado();
       } catch (e) {
