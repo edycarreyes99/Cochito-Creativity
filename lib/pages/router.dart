@@ -14,13 +14,13 @@ class RouterPage extends StatefulWidget {
 }
 
 enum AuthStatus {
-  NOT_DETERMINED,
+  // NOT_DETERMINED,
   NOT_LOGGED_IN,
   LOGGED_IN,
 }
 
 class _RouterPageState extends State<RouterPage> {
-  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
+  AuthStatus authStatus = AuthStatus.NOT_LOGGED_IN;
   String _userId = "";
 
   @override
@@ -67,9 +67,9 @@ class _RouterPageState extends State<RouterPage> {
   @override
   Widget build(BuildContext context) {
     switch (authStatus) {
-      case AuthStatus.NOT_DETERMINED:
+      /*case AuthStatus.NOT_DETERMINED:
         return _buildWaitingScreen();
-        break;
+        break;*/
       case AuthStatus.NOT_LOGGED_IN:
         return new LoginPage(
           servicio: widget.auth,
@@ -86,10 +86,20 @@ class _RouterPageState extends State<RouterPage> {
             onSignedOut: _onSignedOut,
           );
         } else
-          return _buildWaitingScreen();
+          return new LoginPage(
+            servicio: widget.auth,
+            onIniciado: _onLoggedIn,
+            isAndroid: Platform.isAndroid,
+          );
+        // return _buildWaitingScreen();
         break;
       default:
-        return _buildWaitingScreen();
+        return new LoginPage(
+          servicio: widget.auth,
+          onIniciado: _onLoggedIn,
+          isAndroid: Platform.isAndroid,
+        );
+      // return _buildWaitingScreen();
     }
   }
 }

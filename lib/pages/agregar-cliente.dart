@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 
+import 'package:loveliacreativity/classes/Pedido.dart';
+
 class AgregarClientePage extends StatefulWidget {
-  AgregarClientePage({Key key, this.idPedido}) : super(key: key);
+  AgregarClientePage({Key key, this.idPedido, this.pedido}) : super(key: key);
 
   final String idPedido;
+  final Pedido pedido;
 
   @override
   _AgregarClientePageState createState() => _AgregarClientePageState();
@@ -149,7 +152,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
 
   Future<Null> seleccionarHora(BuildContext context) async {
     TimeOfDay picked;
-    if (Platform.isAndroid || Platform.isFuchsia) {
+    if (Platform.isAndroid) {
       picked =
           await showTimePicker(context: context, initialTime: TimeOfDay.now());
     } else if (Platform.isIOS) {
@@ -178,11 +181,12 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
         this.fechaEntrega = DateTime(
           DateTime.now().year,
           DateTime.now().month,
-          int.parse(this.widget.idPedido.substring(0, 2)),
+          int.parse(this.widget.idPedido.substring(0, 1)) < 10
+              ? int.parse(this.widget.idPedido.substring(0, 1))
+              : int.parse(this.widget.idPedido.substring(0, 2)),
           fechaModificada.hour,
           fechaModificada.minute,
         );
-        this._formKeyFecha.currentState.reset();
       });
   }
 
@@ -386,38 +390,35 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                   ),
                 ),
               ),
-              Form(
-                key: _formKeyFecha,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.7),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: InkWell(
-                          onTap: () => this.seleccionarHora(context),
-                          child: InputDecorator(
-                            decoration: InputDecoration(
-                              labelStyle: TextStyle(
-                                fontSize: 20.0,
-                              ),
-                              hasFloatingPlaceholder: true,
-                              labelText: this.fechaModificada == null
-                                  ? 'Hora de Entrega'
-                                  : this.fechaModificada.format(context),
-                              suffixIcon: Icon(
-                                Icons.calendar_today,
-                                color: Colors.redAccent[100],
-                              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: InkWell(
+                        onTap: () => this.seleccionarHora(context),
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                            ),
+                            hasFloatingPlaceholder: true,
+                            labelText: this.fechaModificada == null
+                                ? 'Hora de Entrega'
+                                : this.fechaModificada.format(context),
+                            suffixIcon: Icon(
+                              Icons.calendar_today,
+                              color: Colors.redAccent[100],
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
