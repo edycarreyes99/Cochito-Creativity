@@ -31,10 +31,9 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
 
   bool validar() {
     final form = this._formKey.currentState;
-    final formDate = this._formKeyFecha.currentState;
-    if (form.validate() && formDate.validate()) {
+    // final formDate = this._formKeyFecha.currentState;
+    if (form.validate()) {
       form.save();
-      formDate.save();
       return true;
     } else {
       return false;
