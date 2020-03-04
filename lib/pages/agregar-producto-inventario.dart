@@ -89,8 +89,7 @@ class _AgregarProductoInventarioPageState
   Future<File> recortarImagen(File imageFile) async {
     File croppedFile = await ImageCropper.cropImage(
       sourcePath: imageFile.path,
-      ratioX: 1.0,
-      ratioY: 1.0,
+      aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       maxWidth: 512,
       maxHeight: 512,
     );
