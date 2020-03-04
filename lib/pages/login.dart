@@ -128,8 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: <Widget>[
                       Container(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: this.widget.isAndroid
-                            ? TextFormField(
+                        child: TextFormField(
                                 keyboardType: TextInputType.emailAddress,
                                 autofocus: false,
                                 validator: (value) => value.isEmpty
@@ -150,26 +149,11 @@ class _LoginPageState extends State<LoginPage> {
                                   fillColor: Colors.grey[200],
                                   hasFloatingPlaceholder: true,
                                 ),
-                              )
-                            : CupertinoTextField(
-                                keyboardType: TextInputType.emailAddress,
-                                autofocus: false,
-                                onSubmitted: (value) => _email = value,
-                                placeholder: 'Email',
-                                cursorColor: Colors.redAccent[100],
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.0)),
-                                ),
-                                padding:
-                                    EdgeInsets.fromLTRB(15.0, 20.0, 20.0, 15.0),
                               ),
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: this.widget.isAndroid
-                            ? TextFormField(
+                        child: TextFormField(
                                 autofocus: false,
                                 obscureText: true,
                                 validator: (value) => value.isEmpty
@@ -186,20 +170,6 @@ class _LoginPageState extends State<LoginPage> {
                                         borderSide: BorderSide.none),
                                     filled: true,
                                     fillColor: Colors.grey[200]),
-                              )
-                            : CupertinoTextField(
-                                keyboardType: TextInputType.text,
-                                autofocus: false,
-                                obscureText: true,
-                                onSubmitted: (value) => _password = value,
-                                placeholder: 'Contraseña',
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.0)),
-                                ),
-                                padding:
-                                    EdgeInsets.fromLTRB(15.0, 20.0, 20.0, 15.0),
                               ),
                       ),
                     ],
@@ -236,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onPressed: () => {},
+                          onPressed: () => this.iniciarSesion(),
                         ),
                 ),
               )
