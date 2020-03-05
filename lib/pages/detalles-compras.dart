@@ -607,10 +607,10 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                                         .cantidadProducto
                                         .toString(),
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                  backgroundColor: Colors.redAccent[100],
+                                  backgroundColor: Colors.blueGrey,
                                 ) /*CachedNetworkImage(
                             imageUrl: this
                                 .productos

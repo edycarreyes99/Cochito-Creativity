@@ -105,166 +105,159 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final loginForm = Container(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Center(
-                child: Text(
-                  'Inicia sesión para continuar',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15.0,
-                  ),
+      padding: EdgeInsets.all(16.0),
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Center(
+              child: Text(
+                'Inicia sesión para continuar',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15.0,
                 ),
               ),
-              Container(
+            ),
+            Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        autofocus: false,
+                        validator: (value) => value.isEmpty
+                            ? 'El email no puede estar en blanco.'
+                            : null,
+                        onSaved: (value) => _email = value,
+                        cursorColor: Colors.redAccent[100],
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          contentPadding:
+                              EdgeInsets.fromLTRB(15.0, 20.0, 20.0, 15.0),
+                          border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(30.0),
+                              ),
+                              borderSide: BorderSide.none),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          hasFloatingPlaceholder: true,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextFormField(
+                        autofocus: false,
+                        obscureText: true,
+                        validator: (value) => value.isEmpty
+                            ? 'La contraseña no puede estar en blanco.'
+                            : null,
+                        onSaved: (value) => _password = value,
+                        decoration: InputDecoration(
+                            labelText: 'Contraseña',
+                            contentPadding:
+                                EdgeInsets.fromLTRB(15.0, 20.0, 20.0, 15.0),
+                            border: OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                    const Radius.circular(30.0)),
+                                borderSide: BorderSide.none),
+                            filled: true,
+                            fillColor: Colors.grey[200]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 48, 0, 16),
+              child: SizedBox(
+                height: 50.0,
+                child: this.widget.isAndroid
+                    ? RaisedButton(
+                        onPressed: () => this.iniciarSesion(),
+                        elevation: 6.0,
+                        color: Colors.redAccent[100],
+                        child: Text(
+                          'Iniciar Sesión',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(50.0),
+                        ),
+                      )
+                    : CupertinoButton(
+                        color: Colors.redAccent[100],
+                        child: Text(
+                          'Iniciar Sesion',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () => this.iniciarSesion(),
+                      ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Builder(
+        builder: (context) => Center(
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.only(left: 24.0, right: 24.0),
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                autofocus: false,
-                                validator: (value) => value.isEmpty
-                                    ? 'El email no puede estar en blanco.'
-                                    : null,
-                                onSaved: (value) => _email = value,
-                                cursorColor: Colors.redAccent[100],
-                                decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  contentPadding: EdgeInsets.fromLTRB(
-                                      15.0, 20.0, 20.0, 15.0),
-                                  border: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(30.0),
-                                      ),
-                                      borderSide: BorderSide.none),
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  hasFloatingPlaceholder: true,
-                                ),
-                              ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: TextFormField(
-                                autofocus: false,
-                                obscureText: true,
-                                validator: (value) => value.isEmpty
-                                    ? 'La contraseña no puede estar en blanco.'
-                                    : null,
-                                onSaved: (value) => _password = value,
-                                decoration: InputDecoration(
-                                    labelText: 'Contraseña',
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        15.0, 20.0, 20.0, 15.0),
-                                    border: OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(
-                                            const Radius.circular(30.0)),
-                                        borderSide: BorderSide.none),
-                                    filled: true,
-                                    fillColor: Colors.grey[200]),
-                              ),
-                      ),
-                    ],
+                  child: Text(
+                    'Te damos la bienvenida a',
+                    style: TextStyle(fontSize: 20, color: Colors.black),
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(0, 48, 0, 16),
-                child: SizedBox(
-                  height: 50.0,
-                  child: this.widget.isAndroid
-                      ? RaisedButton(
-                          onPressed: () => this.iniciarSesion(),
-                          elevation: 6.0,
-                          color: Colors.redAccent[100],
-                          child: Text(
-                            'Iniciar Sesión',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(50.0),
-                          ),
-                        )
-                      : CupertinoButton(
-                          color: Colors.redAccent[100],
-                          child: Text(
-                            'Iniciar Sesion',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          onPressed: () => this.iniciarSesion(),
-                        ),
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                child: Center(
+                  child: Text(
+                    'Cochito\nCreativity',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.redAccent[100],
+                      //color: Colors.black,
+                      fontSize: 50.0,
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 28.0),
+                    loginForm,
+                  ],
                 ),
               )
             ],
           ),
-        ));
-
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.redAccent[100],
-          primarySwatch: Colors.lightGreen,
-          platform: this.widget.isAndroid
-              ? TargetPlatform.android
-              : TargetPlatform.iOS,
         ),
-        home: Scaffold(
-            backgroundColor: Colors.white,
-            body: Builder(
-                builder: (context) => Center(
-                      child: ListView(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(left: 24.0, right: 24.0),
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                            child: Center(
-                              child: Text(
-                                'Te damos la bienvenida a',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.black),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-                            child: Center(
-                              child: Text(
-                                'Lovelia\nCreativity',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.redAccent[100],
-                                  //color: Colors.black,
-                                  fontSize: 50.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: Column(
-                              children: <Widget>[
-                                SizedBox(height: 28.0),
-                                loginForm,
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ))));
+      ),
+    );
   }
 }

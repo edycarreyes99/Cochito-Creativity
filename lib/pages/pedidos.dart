@@ -106,7 +106,7 @@ class _PedidosPageState extends State<PedidosPage> {
                       ],
                     ),
                     leading: CircleAvatar(
-                      backgroundColor: Colors.lightGreen,
+                      backgroundColor: Colors.blueGrey,
                       child: Center(
                         child: Text(
                           this.pedidos[i].getTotalProductos().toString(),

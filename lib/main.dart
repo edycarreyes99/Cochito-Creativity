@@ -66,10 +66,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lovelia Creativity',
+      title: 'Cochito Creativity',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.lightGreen,
+        primarySwatch: Colors.blueGrey,
         primaryColor: Colors.redAccent[100],
       ),
       home: RouterPage(

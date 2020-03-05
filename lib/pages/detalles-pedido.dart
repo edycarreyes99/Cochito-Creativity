@@ -293,7 +293,7 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
                   child: ListTile(
                     title: Text(this.detallesPedidos[index].nombreCliente),
                     leading: CircleAvatar(
-                      backgroundColor: Colors.lightGreen,
+                      backgroundColor: Colors.blueGrey,
                       child: Center(
                         child: Text(
                           this
