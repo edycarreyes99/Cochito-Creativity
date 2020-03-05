@@ -1,4 +1,4 @@
-package com.firecodes.loveliacreativity
+package com.firecodes.cochitocreativity
 
 import android.os.Bundle
 
