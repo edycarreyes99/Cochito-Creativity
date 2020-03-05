@@ -166,7 +166,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: Text(widget.titulo),
+          title: Text('Cochito Creativity'),
           actions: <Widget>[
             PopupMenuButton<String>(
               onSelected: (String result) {

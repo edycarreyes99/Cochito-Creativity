@@ -21,78 +21,82 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-/*def keystoreProperties = new Properties()
+// para realease
+def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}*/
+}
+// fin para release
+
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 28
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
+    compileSdkVersion 29
 
     lintOptions {
         disable 'InvalidPackage'
     }
 
-    /*splits {
-        // Configures multiple APKs based on ABI.
-        abi {
-            // Enables building multiple APKs per ABI.
-            enable true
-            // By default all ABIs are included, so use reset() and include to specify that we only
-            // want APKs for armeabi-v7a and arm64-v8a.
-
-            // Resets the list of ABIs that Gradle should create APKs for to none.
-            reset()
-
-            // Specifies a list of ABIs that Gradle should create APKs for.
-            include "armeabi-v7a", "arm64-v8a"
-
-            // Specifies that we do not want to also generate a universal APK that includes all ABIs.
-            universalApk false
-        }
-    }*/
-
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.firecodes.loveliacreativity"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
 
-    /*signingConfigs {
+    // para debug
+    /*buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+    }*/
+    // fin para debug
+
+    // para release
+    signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
-    }*/
+    }
+
 
     buildTypes {
-        /*release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.release
+        release {
+            // Configuracion para minimizar el codigo de compilacion
 
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
             minifyEnabled true
-            useProguard true
 
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }*/
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+        }
     }
+    // fin para release
+
 }
 
 flutter {
