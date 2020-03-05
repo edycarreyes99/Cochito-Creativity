@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:loveliacreativity/classes/Producto.dart';
+import 'package:cochitocreativity/classes/Producto.dart';
 import 'package:photo_view/photo_view.dart';
 
 class VerProductoInventarioPage extends StatefulWidget {

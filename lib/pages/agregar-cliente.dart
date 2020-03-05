@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
 
-import 'package:loveliacreativity/classes/Pedido.dart';
+import 'package:cochitocreativity/classes/Pedido.dart';
 
 class AgregarClientePage extends StatefulWidget {
   AgregarClientePage({Key key, this.idPedido, this.pedido}) : super(key: key);

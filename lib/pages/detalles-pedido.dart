@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:googleapis/clouddebugger/v2.dart';
-import 'package:loveliacreativity/classes/Pedido.dart';
+import 'package:cochitocreativity/classes/Pedido.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detalles-compras.dart';

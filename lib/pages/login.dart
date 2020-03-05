@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
-import 'package:loveliacreativity/services/auth.dart';
+import 'package:cochitocreativity/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
   // constructor

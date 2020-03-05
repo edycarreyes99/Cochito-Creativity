@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:loveliacreativity/pages/router.dart';
+import 'package:cochitocreativity/pages/router.dart';
 import 'pages/home.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -9,7 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io' show Platform;
 import 'package:firebase_performance/firebase_performance.dart';
-import 'package:loveliacreativity/services/auth.dart';
+import 'package:cochitocreativity/services/auth.dart';
 
 void main() {
   // Crashlytics.instance.enableInDevMode = true;

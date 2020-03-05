@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:loveliacreativity/services/auth.dart';
+import 'package:cochitocreativity/services/auth.dart';
 
 class AccountPage extends StatefulWidget {
   AccountPage({Key key, this.auth, this.userId, this.onSignedOut})

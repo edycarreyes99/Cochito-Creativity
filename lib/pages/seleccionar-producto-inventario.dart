@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:loveliacreativity/classes/Detalle-Pedido.dart';
+import 'package:cochitocreativity/classes/Detalle-Pedido.dart';
 import 'editar-producto-inventario.dart';
 import 'dart:async';
 import '../classes/Producto.dart';

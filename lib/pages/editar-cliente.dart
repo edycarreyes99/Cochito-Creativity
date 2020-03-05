@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io' show Platform;
 
-import 'package:loveliacreativity/classes/Detalle-Pedido.dart';
+import 'package:cochitocreativity/classes/Detalle-Pedido.dart';
 
 class EditarClientePage extends StatefulWidget {
   EditarClientePage({Key key, this.idPedido, this.cliente}) : super(key: key);

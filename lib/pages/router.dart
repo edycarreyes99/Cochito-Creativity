@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loveliacreativity/pages/login.dart';
-import 'package:loveliacreativity/services/auth.dart';
-import 'package:loveliacreativity/pages/home.dart';
+import 'package:cochitocreativity/pages/login.dart';
+import 'package:cochitocreativity/services/auth.dart';
+import 'package:cochitocreativity/pages/home.dart';
 import 'dart:io' show Platform;
 
 class RouterPage extends StatefulWidget {
