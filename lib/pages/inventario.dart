@@ -25,8 +25,6 @@ class _InventarioPageState extends State<InventarioPage> {
   StreamSubscription<QuerySnapshot> productosSub;
   FirebaseStorage storage = FirebaseStorage.instance;
 
-  int cantidadProductos = 0;
-
   Stream<QuerySnapshot> getListaDeInventario({int offset, int limit}) {
     Stream<QuerySnapshot> snapshots =
         Firestore.instance.collection('/Inventario/').snapshots();
@@ -164,7 +162,6 @@ class _InventarioPageState extends State<InventarioPage> {
           .toList();
       setState(() {
         this.productos = productoss;
-        this.cantidadProductos = snapshot.documents.length;
       });
     });
   }
@@ -215,8 +212,8 @@ class _InventarioPageState extends State<InventarioPage> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             VerProductoInventarioPage(
-                                              producto: this.productos[index],
-                                            ),
+                                          producto: this.productos[index],
+                                        ),
                                       ),
                                     );
                                   },
@@ -239,8 +236,8 @@ class _InventarioPageState extends State<InventarioPage> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             EditarProductoInventarioPage(
-                                              producto: this.productos[index],
-                                            ),
+                                          producto: this.productos[index],
+                                        ),
                                       ),
                                     );
                                   },
@@ -270,13 +267,13 @@ class _InventarioPageState extends State<InventarioPage> {
                   child: CachedNetworkImage(
                     imageUrl: this.productos[index].imagen,
                     imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
                         ),
+                      ),
+                    ),
                     placeholder: (context, url) => CircularProgressIndicator(),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
@@ -292,9 +289,7 @@ class _InventarioPageState extends State<InventarioPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AgregarProductoInventarioPage(
-                    cantidadProductosInventario: this.cantidadProductos,
-                  ),
+              builder: (context) => AgregarProductoInventarioPage(),
             ),
           );
         },

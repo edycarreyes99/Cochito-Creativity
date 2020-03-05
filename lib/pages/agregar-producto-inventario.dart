@@ -10,10 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 
 class AgregarProductoInventarioPage extends StatefulWidget {
-  AgregarProductoInventarioPage({Key key, this.cantidadProductosInventario})
-      : super(key: key);
-
-  final int cantidadProductosInventario;
+  AgregarProductoInventarioPage({Key key}) : super(key: key);
 
   @override
   _AgregarProductoInventarioPageState createState() =>
@@ -28,6 +25,7 @@ class _AgregarProductoInventarioPageState
   String _nombreProducto;
   String _idNuevoProducto;
   int cantidadProductos;
+  final _idProductoController = TextEditingController();
 
   Firestore fs = Firestore.instance;
   StreamSubscription<QuerySnapshot> agregarProductoSub;
@@ -125,15 +123,23 @@ class _AgregarProductoInventarioPageState
   }
 
   String generarId() {
-    return 'PROD-' + (this.widget.cantidadProductosInventario + 1).toString();
+    return this._idNuevoProducto;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    this._idNuevoProducto =
-        'PROD-' + (this.widget.cantidadProductosInventario + 1).toString();
+    this.fs.document('Control/Control').get().then((control) {
+      setState(() {
+        this._idNuevoProducto =
+            'PROD-' + (control.data['ContadorIdInventario'] + 1).toString();
+        this._idProductoController.value =
+            TextEditingValue(text: this._idNuevoProducto);
+      });
+    }).catchError((e) {
+      print(e.toString());
+    });
   }
 
   @override
@@ -239,7 +245,7 @@ class _AgregarProductoInventarioPageState
                           keyboardType: TextInputType.text,
                           enabled: false,
                           autofocus: false,
-                          initialValue: this._idNuevoProducto,
+                          controller: this._idProductoController,
                           decoration: InputDecoration(
                             labelText: 'ID de Producto',
                             hasFloatingPlaceholder: true,
@@ -310,8 +316,37 @@ class _AgregarProductoInventarioPageState
                               'Precio': this._precioProducto,
                               'ID': this.generarId()
                             }).then((value) {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
+                              this.fs.document('Control/Control').updateData({
+                                'ContadorIdInventario': FieldValue.increment(1),
+                              }).then((onValue) {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              }).catchError((e) {
+                                print(e.toString());
+                                Navigator.of(context).pop();
+                                showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return CupertinoAlertDialog(
+                                        title: Text('Hubo un error:'),
+                                        actions: <Widget>[
+                                          CupertinoDialogAction(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: Text('Cerrar'),
+                                          )
+                                        ],
+                                        content: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20.0),
+                                          child: Center(
+                                            child: Text(e.toString()),
+                                          ),
+                                        ),
+                                      );
+                                    });
+                              });
                             }).catchError((e) {
                               print(e.toString());
                               Navigator.of(context).pop();
