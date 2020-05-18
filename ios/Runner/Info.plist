@@ -47,5 +47,31 @@
 	<string>Tomar fotos desde la camara o escogerlas desde la galeria para los productos</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Tomar fotos desde la camara o escogerlas desde la galeria para los productos</string>
+
+	<!-- Facebook Login configuration -->
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>fb250433569721333</string>
+            </array>
+        </dict>
+    </array>
+
+    <key>FacebookAppID</key>
+
+    <string>250433569721333</string>
+    <key>FacebookDisplayName</key>
+
+    <string>Cochito Creativity</string>
+
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>fbapi</string>
+        <string>fb-messenger-share-api</string>
+        <string>fbauth2</string>
+        <string>fbshareextension</string>
+    </array>
 </dict>
 </plist>
