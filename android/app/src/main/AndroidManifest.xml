@@ -8,7 +8,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_cochito"
+        android:roundIcon="@mipmap/ic_launcher_cochito_round"
         android:label="Cochito Creativity">
         <activity
             android:name=".MainActivity"

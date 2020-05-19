@@ -6,7 +6,7 @@ class AccountPage extends StatefulWidget {
   AccountPage({Key key, this.auth, this.userId, this.onSignedOut})
       : super(key: key);
 
-  final BaseAuth auth;
+  final Auth auth;
   final VoidCallback onSignedOut;
   final String userId;
 

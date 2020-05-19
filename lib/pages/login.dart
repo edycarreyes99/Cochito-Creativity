@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.servicio, this.onIniciado, this.isAndroid})
       : super(key: key);
 
-  final BaseAuth servicio;
+  final Auth servicio;
 
   // variables que se inicializan mediante paso por valor desde el constructor para las acciones posteriores
   final VoidCallback onIniciado;
@@ -50,55 +50,53 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void iniciarSesion() async {
-    if (validar()) {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text('Iniciando Sesión'),
-              content: Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text('Iniciando Sesión'),
+            content: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
-            );
-          });
-      try {
-        String userEmail =
-            await widget.servicio.signIn(_email, _password).then((user) {
-          Navigator.of(context).pop();
-          return user.email;
-        }).catchError((e) {
-          Navigator.of(context).pop();
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return CupertinoAlertDialog(
-                  title: Text('Hubo un error:'),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text('Cerrar'),
-                    )
-                  ],
-                  content: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Center(
-                      child: Text(e.toString()),
-                    ),
-                  ),
-                );
-              });
-          print(e);
+            ),
+          );
         });
-        print('Ha Iniciado sesion como: $userEmail');
-        widget.onIniciado();
-      } catch (e) {
+    try {
+      String userEmail =
+      await widget.servicio.signInWithFacebook(context).then((user) {
+        Navigator.of(context).pop();
+        return user.displayName;
+      }).catchError((e) {
+        Navigator.of(context).pop();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return CupertinoAlertDialog(
+                title: Text('Hubo un error:'),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Cerrar'),
+                  )
+                ],
+                content: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Center(
+                    child: Text(e.toString()),
+                  ),
+                ),
+              );
+            });
         print(e);
-      }
+      });
+      print('Ha Iniciado sesion como: $userEmail');
+      widget.onIniciado();
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -106,112 +104,54 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final loginForm = Container(
       padding: EdgeInsets.all(16.0),
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Center(
-              child: Text(
-                'Inicia sesión para continuar',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15.0,
-                ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Center(
+            child: Text(
+              'Inicia sesión con Facebook para continuar',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 15.0,
               ),
             ),
-            Container(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        autofocus: false,
-                        validator: (value) => value.isEmpty
-                            ? 'El email no puede estar en blanco.'
-                            : null,
-                        onSaved: (value) => _email = value,
-                        cursorColor: Colors.redAccent[100],
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          contentPadding:
-                              EdgeInsets.fromLTRB(15.0, 20.0, 20.0, 15.0),
-                          border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(30.0),
-                              ),
-                              borderSide: BorderSide.none),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          hasFloatingPlaceholder: true,
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 48, 0, 16),
+            child: SizedBox(
+              height: 50.0,
+              child: this.widget.isAndroid
+                  ? RaisedButton(
+                      onPressed: () => this.iniciarSesion(),
+                      elevation: 6.0,
+                      color: Colors.blue[800],
+                      child: Text(
+                        'Iniciar Sesión con Facebook',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: TextFormField(
-                        autofocus: false,
-                        obscureText: true,
-                        validator: (value) => value.isEmpty
-                            ? 'La contraseña no puede estar en blanco.'
-                            : null,
-                        onSaved: (value) => _password = value,
-                        decoration: InputDecoration(
-                            labelText: 'Contraseña',
-                            contentPadding:
-                                EdgeInsets.fromLTRB(15.0, 20.0, 20.0, 15.0),
-                            border: OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                    const Radius.circular(30.0)),
-                                borderSide: BorderSide.none),
-                            filled: true,
-                            fillColor: Colors.grey[200]),
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(50.0),
                       ),
+                    )
+                  : CupertinoButton(
+                      color: Colors.blue[800],
+                      child: Text(
+                        'Iniciar Sesión con Facebook',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () => this.iniciarSesion(),
                     ),
-                  ],
-                ),
-              ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 48, 0, 16),
-              child: SizedBox(
-                height: 50.0,
-                child: this.widget.isAndroid
-                    ? RaisedButton(
-                        onPressed: () => this.iniciarSesion(),
-                        elevation: 6.0,
-                        color: Colors.redAccent[100],
-                        child: Text(
-                          'Iniciar Sesión',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(50.0),
-                        ),
-                      )
-                    : CupertinoButton(
-                        color: Colors.redAccent[100],
-                        child: Text(
-                          'Iniciar Sesion',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: () => this.iniciarSesion(),
-                      ),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
 
