@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:io';
-import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/rendering.dart';
 import 'package:cochitocreativity/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 
 class LoginPage extends StatefulWidget {
   // constructor
@@ -66,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
         });
     try {
       String userEmail =
-      await widget.servicio.signInWithFacebook(context).then((user) {
+          await widget.servicio.signInWithFacebook(context).then((user) {
         Navigator.of(context).pop();
         return user.displayName;
       }).catchError((e) {
@@ -102,86 +101,32 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loginForm = Container(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Center(
-            child: Text(
-              'Inicia sesión con Facebook para continuar',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 15.0,
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 48, 0, 16),
-            child: SizedBox(
-              height: 50.0,
-              child: this.widget.isAndroid
-                  ? RaisedButton(
-                      onPressed: () => this.iniciarSesion(),
-                      elevation: 6.0,
-                      color: Colors.blue[800],
-                      child: Text(
-                        'Iniciar Sesión con Facebook',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(50.0),
-                      ),
-                    )
-                  : CupertinoButton(
-                      color: Colors.blue[800],
-                      child: Text(
-                        'Iniciar Sesión con Facebook',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: () => this.iniciarSesion(),
-                    ),
-            ),
-          )
-        ],
-      ),
-    );
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Builder(
         builder: (context) => Center(
           child: ListView(
             shrinkWrap: true,
-            padding: EdgeInsets.only(left: 24.0, right: 24.0),
+            padding: EdgeInsets.only(left: 24.0, right: 24.0, top: 40),
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                child: Center(
-                  child: Text(
-                    'Te damos la bienvenida a',
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                child: Image(
+                  width: 90,
+                  height: 90,
+                  image: AssetImage('assets/icon/Cochito-Logo.png'),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                 child: Center(
                   child: Text(
                     'Cochito\nCreativity',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.redAccent[100],
+                      color: Color.fromRGBO(255, 161, 166, 1),
                       //color: Colors.black,
-                      fontSize: 50.0,
+                      fontSize: 35.0,
                     ),
                   ),
                 ),
@@ -189,8 +134,85 @@ class _LoginPageState extends State<LoginPage> {
               Center(
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: 28.0),
-                    loginForm,
+                    SizedBox(height: 10.0),
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Center(
+                            child: Text(
+                              'Inicia sesión con Facebook para continuar.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 48, 0, 16),
+                            child: SizedBox(
+                              height: 50.0,
+                              child: this.widget.isAndroid
+                                  ? CupertinoButton(
+                                      onPressed: () => this.iniciarSesion(),
+                                      color: Color.fromRGBO(255, 161, 166, 1),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          SvgPicture.asset(
+                                            "assets/custom_icons/facebook_icon.svg",
+                                            color: Colors.white,
+                                            width: 15,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(left: 10.0),
+                                            child: Text(
+                                              'Ingresar',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : CupertinoButton(
+                                      color: Color.fromRGBO(255, 161, 166, 0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          SvgPicture.asset(
+                                            "assets/custom_icons/facebook_icon.svg",
+                                            color: Colors.white,
+                                            width: 15,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(left: 10.0),
+                                            child: Text(
+                                              'Ingresar',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      onPressed: () => this.iniciarSesion(),
+                                    ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               )
