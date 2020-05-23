@@ -66,11 +66,21 @@ class _PedidosPageState extends State<PedidosPage> {
     return Scaffold(
       body: this.pedidos.length == 0
           ? Center(
-              child: Text(
-                'Aun no hay ningun pedido registrado',
-                textAlign: TextAlign.center,
-              ),
-            )
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Image(
+                  width: 300,
+                  image: AssetImage('assets/draws/empty_draw.png'),
+                ),
+                Text(
+                  '¡Aun no hay ningun pedido registrado.!',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          )
           : ListView.builder(
               itemCount: this.pedidos.length,
               itemBuilder: (context, i) {

@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     )
                                   : CupertinoButton(
-                                      color: Color.fromRGBO(255, 161, 166, 0),
+                                      color: Colors.blue[800],
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,

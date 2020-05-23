@@ -75,6 +75,7 @@ flutter:
   assets:
   - assets/icon/Cochito-Logo.png
   - assets/custom_icons/facebook_icon.svg
+  - assets/draws/empty_draw.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
