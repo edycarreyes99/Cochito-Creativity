@@ -6,27 +6,24 @@ import 'package:cochitocreativity/pages/login.dart';
 import 'package:cochitocreativity/services/auth.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 
 class RouterPage extends StatefulWidget {
-  RouterPage({this.auth});
+  RouterPage({this.isAndroid, this.authInstance});
 
-  final Auth auth;
+  final bool isAndroid;
+
+  final Auth authInstance;
 
   @override
   State<StatefulWidget> createState() => new _RouterPageState();
 }
 
-enum AuthStatus {
-  // NOT_DETERMINED,
-  NOT_LOGGED_IN,
-  LOGGED_IN,
-}
-
 class _RouterPageState extends State<RouterPage> {
-  AuthStatus authStatus = AuthStatus.NOT_LOGGED_IN;
-  String _userId = "";
+  Auth authInstance;
 
   // Variables para las notificaciones
   FirebaseMessaging _fcm = FirebaseMessaging();
@@ -38,15 +35,6 @@ class _RouterPageState extends State<RouterPage> {
   @override
   void initState() {
     super.initState();
-    widget.auth.getCurrentUser().then((user) {
-      setState(() {
-        if (user != null) {
-          _userId = user?.uid;
-        }
-        authStatus =
-            user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
-      });
-    });
   }
 
   Future onSelectNotification(String payload) async {
@@ -77,7 +65,7 @@ class _RouterPageState extends State<RouterPage> {
     );
   }
 
-  void activarNotificaciones() {
+  void activarNotificaciones(Auth authInstance) {
     if (!Platform.isAndroid) {
       _fcm.requestNotificationPermissions(
           IosNotificationSettings(sound: true, badge: true, alert: true));
@@ -147,8 +135,11 @@ class _RouterPageState extends State<RouterPage> {
                 : Platform.isIOS ? 'iOS' : Platform.isFuchsia ? 'Fuchsia' : '',
             'VersionOS': versionOS,
             'Modelo': modelo,
-            'PerteneceA': widget.auth.user.uid,
-            'NombreUsuario': widget.auth.user.displayName,
+            'PerteneceA': authInstance.user.uid,
+            'NombreUsuario': authInstance.user.displayName,
+            'Email': authInstance.user.email != null
+                ? authInstance.user.email
+                : '',
           })
           .then((value) =>
               print("Dispositivo agregado a la base de datos correctamente!."))
@@ -156,80 +147,54 @@ class _RouterPageState extends State<RouterPage> {
     });
   }
 
-  void _onLoggedIn() {
-    widget.auth.getCurrentUser().then((user) {
-      setState(() {
-        _userId = user.uid.toString();
-      });
-    });
-    setState(() {
-      authStatus = AuthStatus.LOGGED_IN;
-    });
-  }
-
-  void _onSignedOut() {
-    setState(() {
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-      _userId = "";
-    });
-  }
-
-  Widget _buildWaitingScreen() {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    switch (authStatus) {
-      /*case AuthStatus.NOT_DETERMINED:
-        return _buildWaitingScreen();
-        break;*/
-      case AuthStatus.NOT_LOGGED_IN:
-        return new LoginPage(
-          servicio: widget.auth,
-          onIniciado: _onLoggedIn,
-          isAndroid: Platform.isAndroid,
-        );
-        break;
-      case AuthStatus.LOGGED_IN:
-        if (_userId.length > 0 && _userId != null) {
-          // Actualizar la base de datos con los datos del dispositivo
-          activarNotificaciones();
-          var initializationSettingsAndroid =
-              new AndroidInitializationSettings('logo');
-          var initializationSettingsIOS = new IOSInitializationSettings();
-          var initializationSettings = new InitializationSettings(
-              initializationSettingsAndroid, initializationSettingsIOS);
-          flutterLocalNotificationsPlugin =
-              new FlutterLocalNotificationsPlugin();
-          flutterLocalNotificationsPlugin.initialize(initializationSettings,
-              onSelectNotification: onSelectNotification);
-          return new HomePage(
-            titulo: 'Cochito Creativity',
-            userId: _userId,
-            auth: widget.auth,
-            onSignedOut: _onSignedOut,
-          );
-        } else
-          return new LoginPage(
-            servicio: widget.auth,
-            onIniciado: _onLoggedIn,
-            isAndroid: Platform.isAndroid,
-          );
-        // return _buildWaitingScreen();
-        break;
-      default:
-        return new LoginPage(
-          servicio: widget.auth,
-          onIniciado: _onLoggedIn,
-          isAndroid: Platform.isAndroid,
-        );
-      // return _buildWaitingScreen();
-    }
+    return Container(
+      child: ChangeNotifierProvider(create: (_) {
+        authInstance = this.widget.authInstance == null
+            ? Auth.instance()
+            : this.widget.authInstance;
+        return authInstance;
+      }, child: Consumer(builder: (context, Auth user, _) {
+        switch (user.status) {
+          case Status.Uninitialized:
+            print("En el router esta es la view de cargando");
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+            break;
+          case Status.Authenticating:
+          case Status.Unauthenticated:
+            return new LoginPage(
+              isAndroid: Platform.isAndroid,
+            );
+            break;
+          case Status.Authenticated:
+            // Actualizar la base de datos con los datos del dispositivo
+            activarNotificaciones(authInstance);
+            var initializationSettingsAndroid =
+                new AndroidInitializationSettings('logo');
+            var initializationSettingsIOS = new IOSInitializationSettings();
+            var initializationSettings = new InitializationSettings(
+                initializationSettingsAndroid, initializationSettingsIOS);
+            flutterLocalNotificationsPlugin =
+                new FlutterLocalNotificationsPlugin();
+            flutterLocalNotificationsPlugin.initialize(initializationSettings,
+                onSelectNotification: onSelectNotification);
+            return new HomePage(
+              titulo: 'Cochito Creativity',
+              userId: authInstance.user.uid,
+              auth: authInstance,
+            );
+            break;
+          default:
+            return new LoginPage(
+              isAndroid: Platform.isAndroid,
+            );
+        }
+      })),
+    );
   }
 }

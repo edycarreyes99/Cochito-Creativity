@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 
 class AgregarProductoInventarioPage extends StatefulWidget {
@@ -20,12 +21,14 @@ class AgregarProductoInventarioPage extends StatefulWidget {
 class _AgregarProductoInventarioPageState
     extends State<AgregarProductoInventarioPage> {
   File _imagenProducto;
-  double _precioProducto;
+  double _precioCompraProducto;
+  double _precioVentaProducto;
   final _formKey = new GlobalKey<FormState>();
   String _nombreProducto;
   String _idNuevoProducto;
   int cantidadProductos;
   final _idProductoController = TextEditingController();
+  StreamSubscription<DocumentSnapshot> controlSub;
 
   Firestore fs = Firestore.instance;
   StreamSubscription<QuerySnapshot> agregarProductoSub;
@@ -130,15 +133,13 @@ class _AgregarProductoInventarioPageState
   void initState() {
     // TODO: implement initState
     super.initState();
-    this.fs.document('Control/Control').get().then((control) {
+    this.controlSub = this.fs.document('Control/Control').snapshots().listen((control){
       setState(() {
         this._idNuevoProducto =
             'PROD-' + (control.data['ContadorIdInventario'] + 1).toString();
         this._idProductoController.value =
             TextEditingValue(text: this._idNuevoProducto);
       });
-    }).catchError((e) {
-      print(e.toString());
     });
   }
 
@@ -149,7 +150,9 @@ class _AgregarProductoInventarioPageState
     this._idNuevoProducto = null;
     this.cantidadProductos = null;
     this._nombreProducto = null;
-    this._precioProducto = null;
+    this._precioCompraProducto = null;
+    this._precioVentaProducto = null;
+    this.controlSub.cancel();
     // this.agregarProductoSub.cancel();
     super.dispose();
   }
@@ -258,10 +261,10 @@ class _AgregarProductoInventarioPageState
                           keyboardType: TextInputType.number,
                           autofocus: false,
                           validator: (value) => value.isEmpty
-                              ? 'Debe de ingresar un precio para el producto'
+                              ? 'Debe de ingresar un precio de compra para el producto'
                               : null,
                           onSaved: (value) =>
-                              this._precioProducto = double.parse(value),
+                              this._precioCompraProducto = double.parse(value),
                           decoration: InputDecoration(
                             prefix: Text('C\$'),
                             suffix: IconButton(
@@ -273,7 +276,33 @@ class _AgregarProductoInventarioPageState
                                 this._formKey.currentState.reset();
                               },
                             ),
-                            labelText: 'Precio',
+                            labelText: 'Precio de Compra',
+                            hasFloatingPlaceholder: true,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          autofocus: false,
+                          validator: (value) => value.isEmpty
+                              ? 'Debe de ingresar un precio de venta para el producto'
+                              : null,
+                          onSaved: (value) =>
+                              this._precioVentaProducto = double.parse(value),
+                          decoration: InputDecoration(
+                            prefix: Text('C\$'),
+                            suffix: IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.redAccent[100],
+                              ),
+                              onPressed: () {
+                                this._formKey.currentState.reset();
+                              },
+                            ),
+                            labelText: 'Precio de Venta',
                             hasFloatingPlaceholder: true,
                           ),
                         ),
@@ -313,7 +342,8 @@ class _AgregarProductoInventarioPageState
                                 .document(this.generarId())
                                 .setData({
                               'Imagen': url,
-                              'Precio': this._precioProducto,
+                              'PrecioCompra': this._precioCompraProducto,
+                              'PrecioVenta': this._precioVentaProducto,
                               'ID': this.generarId()
                             }).then((value) {
                               this.fs.document('Control/Control').updateData({

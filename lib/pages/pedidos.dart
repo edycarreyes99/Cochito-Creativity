@@ -1,13 +1,14 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'dart:async';
-import '../classes/Pedido.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'detalles-pedido.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
+
+import '../classes/Pedido.dart';
 import 'agregar-pedido.dart';
+import 'detalles-pedido.dart';
 
 class PedidosPage extends StatefulWidget {
   PedidosPage({Key key}) : super(key: key);
@@ -66,21 +67,27 @@ class _PedidosPageState extends State<PedidosPage> {
     return Scaffold(
       body: this.pedidos.length == 0
           ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Image(
-                  width: 300,
-                  image: AssetImage('assets/draws/empty_draw.png'),
-                ),
-                Text(
-                  '¡Aun no hay ningun pedido registrado.!',
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          )
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SvgPicture.asset(
+                    "assets/draws/empty_draw.svg",
+                    width: 250,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: Text(
+                      '¡Aún no hay ningún pedido registrado.!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            )
           : ListView.builder(
               itemCount: this.pedidos.length,
               itemBuilder: (context, i) {
@@ -131,8 +138,8 @@ class _PedidosPageState extends State<PedidosPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetallesPedidoPage(
-                                titulo: this.pedidos[i].getId(),
-                              ),
+                            titulo: this.pedidos[i].getId(),
+                          ),
                         ),
                       );
                     },

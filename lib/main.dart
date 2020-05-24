@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
+
+import 'package:catcher/catcher_plugin.dart';
 import 'package:cochitocreativity/pages/router.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'dart:io' show Platform;
-import 'package:cochitocreativity/services/auth.dart';
-import 'package:catcher/catcher_plugin.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   // Crashlytics.instance.enableInDevMode = true;
@@ -74,7 +74,8 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Colors.redAccent[100],
       ),
       home: RouterPage(
-        auth: new Auth(),
+        isAndroid:
+            Platform.isAndroid ? true : Platform.isFuchsia ? true : false,
       ),
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: analytics),

@@ -1,16 +1,19 @@
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
+import 'dart:async';
+import 'dart:io' show Platform;
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cochitocreativity/pages/editar-producto-inventario.dart';
 import 'package:cochitocreativity/pages/ver-producto-inventario.dart';
-import 'agregar-producto-inventario.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'editar-producto-inventario.dart';
-import 'dart:async';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
+
 import '../classes/Producto.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'dart:io' show Platform;
+import 'agregar-producto-inventario.dart';
+import 'editar-producto-inventario.dart';
 
 class InventarioPage extends StatefulWidget {
   InventarioPage({Key key}) : super(key: key);
@@ -81,7 +84,7 @@ class _InventarioPageState extends State<InventarioPage> {
                       ),
                     ),
                     CupertinoButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.of(context).pop();
                         showDialog(
                             context: context,
@@ -97,7 +100,7 @@ class _InventarioPageState extends State<InventarioPage> {
                                 ),
                               );
                             });
-                        eliminarProductoInventario(producto);
+                        await eliminarProductoInventario(producto);
                       },
                       child: Text(
                         'Eliminar',
@@ -178,7 +181,30 @@ class _InventarioPageState extends State<InventarioPage> {
     return Scaffold(
       body: this.productos.length == 0
           ? Center(
-              child: Text('Aun no hay productos en el inventario.'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SvgPicture.asset(
+                    "assets/draws/empty_draw.svg",
+                    width: 250,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 30.0,
+                      left: 20,
+                      right: 20,
+                    ),
+                    child: Text(
+                      '¡Aún no hay ningún producto registrado en el inventario.!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
             )
           : GridView.builder(
               itemCount: this.productos.length,
@@ -274,7 +300,13 @@ class _InventarioPageState extends State<InventarioPage> {
                         ),
                       ),
                     ),
-                    placeholder: (context, url) => CircularProgressIndicator(),
+                    placeholder: (context, url) => Center(
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 );

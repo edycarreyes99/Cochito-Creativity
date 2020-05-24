@@ -5,16 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   // constructor
-  LoginPage({Key key, this.servicio, this.onIniciado, this.isAndroid})
-      : super(key: key);
+  LoginPage({Key key, this.authInstance, this.isAndroid}) : super(key: key);
 
-  final Auth servicio;
-
-  // variables que se inicializan mediante paso por valor desde el constructor para las acciones posteriores
-  final VoidCallback onIniciado;
+  final Auth authInstance;
 
   // variable que se inicializa mediante paso por valor desde el constructor para conocer la plataforma en la que la aplicacion se esta corriendo
   final bool isAndroid;
@@ -38,62 +35,9 @@ class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
 
-  bool validar() {
-    final form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  void iniciarSesion() async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text('Iniciando Sesión'),
-            content: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
-        });
+  void iniciarSesion(Auth authProvider) async {
     try {
-      String userEmail =
-          await widget.servicio.signInWithFacebook(context).then((user) {
-        Navigator.of(context).pop();
-        return user.displayName;
-      }).catchError((e) {
-        Navigator.of(context).pop();
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return CupertinoAlertDialog(
-                title: Text('Hubo un error:'),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('Cerrar'),
-                  )
-                ],
-                content: Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Center(
-                    child: Text(e.toString()),
-                  ),
-                ),
-              );
-            });
-        print(e);
-      });
-      print('Ha Iniciado sesion como: $userEmail');
-      widget.onIniciado();
+      await authProvider.signInWithFacebook(context);
     } catch (e) {
       print(e);
     }
@@ -101,6 +45,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Builder(
@@ -157,7 +103,8 @@ class _LoginPageState extends State<LoginPage> {
                               height: 50.0,
                               child: this.widget.isAndroid
                                   ? CupertinoButton(
-                                      onPressed: () => this.iniciarSesion(),
+                                      onPressed: () =>
+                                          this.iniciarSesion(authProvider),
                                       color: Color.fromRGBO(255, 161, 166, 1),
                                       child: Row(
                                         mainAxisAlignment:
@@ -206,7 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                         ],
                                       ),
-                                      onPressed: () => this.iniciarSesion(),
+                                      onPressed: () =>
+                                          this.iniciarSesion(authProvider),
                                     ),
                             ),
                           )

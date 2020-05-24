@@ -161,13 +161,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text('Cochito Creativity'),
-          actions: <Widget>[
+          /*actions: <Widget>[
             PopupMenuButton<String>(
               onSelected: (String result) {
                 realizarAccionPedido(result);
@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
             ),
-          ],
+          ],*/
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
@@ -200,11 +200,11 @@ class _HomePageState extends State<HomePage> {
               Tab(
                 icon: Icon(Icons.assignment),
                 text: 'Inventario',
-              ), /*
+              ),
               Tab(
                 icon: Icon(Icons.account_circle),
                 text: 'Mi Cuenta',
-              )*/
+              )
             ],
           ),
         ),
@@ -212,11 +212,11 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             PedidosPage(),
             InventarioPage(),
-            /*AccountPage(
+            AccountPage(
               auth: widget.auth,
               userId: widget.userId,
               onSignedOut: widget.onSignedOut,
-            )*/
+            )
           ],
         ),
       ),
