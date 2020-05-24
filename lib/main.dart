@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:catcher/catcher_plugin.dart';
-import 'package:cochitocreativity/pages/router.dart';
+import 'package:cochitocreativity/views/router.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';

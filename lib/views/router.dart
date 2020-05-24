@@ -1,8 +1,8 @@
 import 'dart:io' show Platform;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cochitocreativity/pages/home.dart';
-import 'package:cochitocreativity/pages/login.dart';
+import 'package:cochitocreativity/views/home.dart';
+import 'package:cochitocreativity/views/login.dart';
 import 'package:cochitocreativity/services/auth.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

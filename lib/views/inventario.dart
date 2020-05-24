@@ -3,8 +3,8 @@ import 'dart:io' show Platform;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cochitocreativity/pages/editar-producto-inventario.dart';
-import 'package:cochitocreativity/pages/ver-producto-inventario.dart';
+import 'package:cochitocreativity/views/editar-producto-inventario.dart';
+import 'package:cochitocreativity/views/ver-producto-inventario.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cochitocreativity/classes/Compra.dart';
-import 'package:cochitocreativity/pages/seleccionar-producto-inventario.dart';
+import 'package:cochitocreativity/views/seleccionar-producto-inventario.dart';
 import '../classes/Detalle-Pedido.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../classes/Producto.dart';
