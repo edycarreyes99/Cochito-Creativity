@@ -1,9 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
+import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cochitocreativity/classes/Pedido.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AgregarClientePage extends StatefulWidget {
   AgregarClientePage({Key key, this.idPedido, this.pedido}) : super(key: key);
@@ -116,7 +119,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
-                    backgroundColor: Colors.green[600],
+                    backgroundColor: Colors.green[800],
                   ),
                 ),
                 ListTile(
@@ -141,6 +144,18 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                   },
                   leading: CircleAvatar(
                     backgroundColor: Colors.pinkAccent,
+                  ),
+                ),
+                ListTile(
+                  title: Text('Cochito Creativity'),
+                  onTap: () {
+                    setState(() {
+                      this.redSocial = 'Cochito Creativity';
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.redAccent[100],
                   ),
                 )
               ],

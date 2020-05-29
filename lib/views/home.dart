@@ -1,15 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:cochitocreativity/views/account.dart';
-import 'package:cochitocreativity/services/auth.dart';
-import 'pedidos.dart';
-import 'inventario.dart';
-import 'account.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io' show Platform;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cochitocreativity/services/auth.dart';
+import 'package:cochitocreativity/views/account.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'account.dart';
+import 'inventario.dart';
+import 'pedidos.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.titulo, this.auth, this.userId, this.onSignedOut})
@@ -19,6 +22,16 @@ class HomePage extends StatefulWidget {
   final Auth auth;
   final VoidCallback onSignedOut;
   final String userId;
+
+  final theme = SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.white,
+    // navigation bar color
+    statusBarColor: Colors.redAccent[100],
+    // status bar color
+    systemNavigationBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.dark,
+  ));
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -161,7 +174,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -192,6 +205,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],*/
           bottom: TabBar(
+            isScrollable: true,
             tabs: <Widget>[
               Tab(
                 icon: Icon(Icons.shopping_cart),
@@ -200,6 +214,10 @@ class _HomePageState extends State<HomePage> {
               Tab(
                 icon: Icon(Icons.assignment),
                 text: 'Inventario',
+              ),
+              Tab(
+                icon: Icon(Icons.message),
+                text: 'Chats',
               ),
               Tab(
                 icon: Icon(Icons.account_circle),
@@ -212,6 +230,11 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             PedidosPage(),
             InventarioPage(),
+            Scaffold(
+              body: Center(
+                child: Text("Zona de mensajes."),
+              ),
+            ),
             AccountPage(
               auth: widget.auth,
               userId: widget.userId,

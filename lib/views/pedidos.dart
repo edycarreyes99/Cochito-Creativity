@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -12,6 +13,16 @@ import 'detalles-pedido.dart';
 
 class PedidosPage extends StatefulWidget {
   PedidosPage({Key key}) : super(key: key);
+
+  final theme = SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.white,
+    // navigation bar color
+    statusBarColor: Colors.redAccent[100],
+    // status bar color
+    systemNavigationBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.dark,
+  ));
 
   @override
   _PedidosPageState createState() => _PedidosPageState();

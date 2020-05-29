@@ -21,7 +21,7 @@ class _VerProductoInventarioPageState extends State<VerProductoInventarioPage> {
         title: Text(
           this.widget.producto.id +
               ' / C\$' +
-              this.widget.producto.precio.toString(),
+              this.widget.producto.precioVenta.toString(),
           style: TextStyle(
             color: Colors.white,
           ),

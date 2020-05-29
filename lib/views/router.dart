@@ -1,22 +1,25 @@
 import 'dart:io' show Platform;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cochitocreativity/services/auth.dart';
 import 'package:cochitocreativity/views/home.dart';
 import 'package:cochitocreativity/views/login.dart';
-import 'package:cochitocreativity/services/auth.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
 class RouterPage extends StatefulWidget {
-  RouterPage({this.isAndroid, this.authInstance});
+  RouterPage({this.isAndroid, this.authInstance, this.remoteConfig});
 
   final bool isAndroid;
 
   final Auth authInstance;
+
+  final RemoteConfig remoteConfig;
 
   @override
   State<StatefulWidget> createState() => new _RouterPageState();
@@ -137,9 +140,8 @@ class _RouterPageState extends State<RouterPage> {
             'Modelo': modelo,
             'PerteneceA': authInstance.user.uid,
             'NombreUsuario': authInstance.user.displayName,
-            'Email': authInstance.user.email != null
-                ? authInstance.user.email
-                : '',
+            'Email':
+                authInstance.user.email != null ? authInstance.user.email : '',
           })
           .then((value) =>
               print("Dispositivo agregado a la base de datos correctamente!."))

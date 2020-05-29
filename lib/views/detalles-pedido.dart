@@ -1,14 +1,15 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:googleapis/clouddebugger/v2.dart';
-import 'package:cochitocreativity/classes/Pedido.dart';
-import '../classes/Detalle-Pedido.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'detalles-compras.dart';
-import 'agregar-cliente.dart';
 import 'dart:io' show Platform;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cochitocreativity/classes/Pedido.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../classes/Detalle-Pedido.dart';
+import 'agregar-cliente.dart';
+import 'detalles-compras.dart';
 
 class DetallesPedidoPage extends StatefulWidget {
   DetallesPedidoPage({Key key, this.titulo}) : super(key: key);
@@ -244,45 +245,65 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
               realizarAccionPedido(result);
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  PopupMenuItem<String>(
-                    value: 'Entregar',
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                      title: Text('Confirmar Entrega'),
-                    ),
+              PopupMenuItem<String>(
+                value: 'Entregar',
+                child: ListTile(
+                  leading: Icon(
+                    Icons.check,
+                    color: Colors.green,
                   ),
-                  const PopupMenuItem<String>(
-                    value: 'Cerrar',
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.assignment_late,
-                        color: Colors.blue,
-                      ),
-                      title: Text('Cerrar Pedido'),
-                    ),
+                  title: Text('Confirmar Entrega'),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Cerrar',
+                child: ListTile(
+                  leading: Icon(
+                    Icons.assignment_late,
+                    color: Colors.blue,
                   ),
-                  const PopupMenuItem<String>(
-                    value: 'Eliminar',
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                      title: Text('Eliminar Pedido'),
-                    ),
+                  title: Text('Cerrar Pedido'),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Eliminar',
+                child: ListTile(
+                  leading: Icon(
+                    Icons.delete,
+                    color: Colors.red,
                   ),
-                ],
+                  title: Text('Eliminar Pedido'),
+                ),
+              ),
+            ],
           )
         ],
       ),
       body: this.detallesPedidos.length == 0
           ? Center(
-              child: Text(
-                'Aún no hay ningun cliente registrado para este pedido.',
-                textAlign: TextAlign.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: SvgPicture.asset(
+                      "assets/draws/clientes_draw.svg",
+                      height: 250,
+                      width: 250,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
+                    child: Text(
+                      '¡Aún no hay ningún cliente registrado para este pedido.!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
             )
           : ListView.builder(
@@ -342,11 +363,10 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetallesComprasPage(
-                                titulo:
-                                    this.detallesPedidos[index].nombreCliente,
-                                detallePedido: this.detallesPedidos[index],
-                                idPedido: this.widget.titulo,
-                              ),
+                            titulo: this.detallesPedidos[index].nombreCliente,
+                            detallePedido: this.detallesPedidos[index],
+                            idPedido: this.widget.titulo,
+                          ),
                         ),
                       );
                     },
@@ -364,8 +384,8 @@ class _DetallesPedidoPageState extends State<DetallesPedidoPage> {
             context,
             MaterialPageRoute(
               builder: (context) => AgregarClientePage(
-                    idPedido: this.widget.titulo,
-                  ),
+                idPedido: this.widget.titulo,
+              ),
             ),
           );
         },

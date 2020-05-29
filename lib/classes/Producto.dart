@@ -17,7 +17,9 @@ class Producto {
 
   String get imagen => this._imagen;
 
-  double get precio => this._precioCompra;
+  double get precioCompra => this._precioCompra;
+
+  double get precioVenta => this._precioVenta;
 
   String get id => this._id;
 
@@ -27,7 +29,8 @@ class Producto {
     var map = new Map<String, dynamic>();
 
     map['Imagen'] = this.imagen;
-    map['Precio'] = this.precio;
+    map['PrecioCompra'] = this.precioCompra;
+    map['PrecioVenta'] = this.precioVenta;
     map['ID'] = this._id;
     map['Categoria'] = this._categoria;
 
@@ -36,7 +39,8 @@ class Producto {
 
   Producto.fromMap(Map<String, dynamic> map) {
     this._imagen = map['Imagen'];
-    this._precioCompra = double.parse(map['Precio'].toString());
+    this._precioCompra = double.parse(map['PrecioCompra'].toString());
+    this._precioVenta = double.parse(map['PrecioVenta'].toString());
     this._categoria = map['Categoria'].toString();
     this._id = map['ID'];
   }

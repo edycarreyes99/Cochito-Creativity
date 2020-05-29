@@ -110,7 +110,7 @@ class _EditarProductoInventarioPageState
   void initState() {
     // TODO: implement initState
     this.precioProducto.value =
-        TextEditingValue(text: this.widget.producto.precio.toString());
+        TextEditingValue(text: this.widget.producto.precioVenta.toString());
     super.initState();
   }
 
