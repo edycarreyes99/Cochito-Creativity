@@ -209,12 +209,13 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
       await this.fs.collection('Pedidos/${this.widget.idPedido}/Clientes').add({
         'CantidadProductos': 0,
         'Compras': [],
-        'TotalPago': 0,
+        'TotalPago': 0.0,
         'NombreCliente': this.nombreCliente.toUpperCase(),
         'LugarEntrega': this.lugarEntrega,
         'RedSocial': this.redSocial,
         'Descripcion': this.descripcion,
-        'FechaEntrega': this.fechaEntrega
+        'FechaEntrega': this.fechaEntrega,
+        'Ganancias': 0.0
       }).then((documento) async {
         await this
             .fs

@@ -62,8 +62,9 @@ class _AgregarPedidoPageState extends State<AgregarPedidoPage> {
       'EstadoPedido': 'Pendiente',
       'FechaEntrega': fecha,
       'ID': this.generarFechaPedidoParaBaseDeDatos(fecha),
-      'TotalPago': 0,
-      'TotalProductos': 0
+      'TotalPago': 0.0,
+      'TotalProductos': 0,
+      'TotalGanancias': 0,
     });
   }
 
