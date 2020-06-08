@@ -105,7 +105,9 @@ class _PedidosPageState extends State<PedidosPage> {
                 return Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: ListTile(
-                    title: Text(this.pedidos[i].getId()),
+                    title: Text(this.pedidos[i].getDiaSemanaEntrega() +
+                        " " +
+                        this.pedidos[i].getId()),
                     subtitle: Row(
                       children: <Widget>[
                         Text('Estado: '),
@@ -123,12 +125,20 @@ class _PedidosPageState extends State<PedidosPage> {
                       ],
                     ),
                     trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        Text(this.pedidos[i].getDiaSemanaEntrega()),
+                        Text(
+                          'Total a pagar: C\$' +
+                              this.pedidos[i].getTotalPago().toString(),
+                          textAlign: TextAlign.right,
+                        ),
                         Padding(
                           padding: EdgeInsets.only(top: 12.0),
                           child: Text(
-                            'C\$' + this.pedidos[i].getTotalPago().toString(),
+                            'Ganancia: C\$' +
+                                this.pedidos[i].getGanancias().toString(),
+                            textAlign: TextAlign.right,
                           ),
                         )
                       ],

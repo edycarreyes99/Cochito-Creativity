@@ -9,7 +9,7 @@ class DetallePedido {
   String _redSocial;
   Timestamp _fechaEntrega;
   int _cantidadProductos;
-  int _totalPago;
+  double _totalPago;
   List<Compra> _compras;
 
   DetallePedido(
@@ -49,7 +49,7 @@ class DetallePedido {
 
   int get cantidadProductos => this._cantidadProductos;
 
-  int get totalPago => this._totalPago;
+  double get totalPago => this._totalPago;
 
   List<Compra> get compras => this._compras;
 

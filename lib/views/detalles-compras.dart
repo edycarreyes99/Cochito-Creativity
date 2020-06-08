@@ -91,8 +91,52 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
     });
   }
 
+  double actualizarTotalPago() {
+    double totalPago = 0.0;
+
+    this.cliente.compras.forEach((compra) {
+      totalPago += this
+              .productos
+              .firstWhere((producto) => producto.id == compra.producto)
+              .precioVenta *
+          compra.cantidadProducto;
+    });
+
+    return totalPago;
+  }
+
+  int actualizarCantidadProductos() {
+    int totalProductos = 0;
+
+    this.cliente.compras.forEach((compra) {
+      totalProductos += compra.cantidadProducto;
+    });
+
+    return totalProductos;
+  }
+
+  double actualizarTotalGanancias() {
+    double ganancias = 0.0;
+
+    this.cliente.compras.forEach((compra) {
+      ganancias = ganancias +
+          ((this
+                      .productos
+                      .firstWhere((producto) => producto.id == compra.producto)
+                      .precioVenta -
+                  this
+                      .productos
+                      .firstWhere((producto) => producto.id == compra.producto)
+                      .precioCompra) *
+              compra.cantidadProducto);
+    });
+
+    return ganancias;
+  }
+
   Future<void> actualizarCompraPedido(Compra compra) async {
     final auxCompra = [];
+    var totalPago = 0.0;
     this.cliente.compras.forEach((compraa) {
       if (compraa == compra) {
         compraa.cantidadProducto = int.parse(this.nuevaCantidadPrducto.text);
@@ -104,7 +148,12 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
     await this
         .fs
         .document('Pedidos/${this.widget.idPedido}/Clientes/${this.cliente.id}')
-        .updateData({'Compras': auxCompra}).then((value) {
+        .updateData({
+      'Compras': auxCompra,
+      'TotalPago': actualizarTotalPago(),
+      'CantidadProductos': actualizarCantidadProductos(),
+      'Ganancias': actualizarTotalGanancias(),
+    }).then((value) {
       print('Producto Actualizado!');
     }).catchError((e) {
       print(e);
@@ -152,6 +201,15 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
         .document('Pedidos/${this.widget.idPedido}/Clientes/${this.cliente.id}')
         .updateData({'Compras': auxCompra}).then((value) {
       print('Producto Eliminado!');
+      this
+          .fs
+          .document(
+              'Pedidos/${this.widget.idPedido}/Clientes/${this.cliente.id}')
+          .updateData({
+        'CantidadProductos': this.actualizarCantidadProductos(),
+        'TotalPago': this.actualizarTotalPago(),
+        'Ganancias': this.actualizarTotalGanancias(),
+      });
       Navigator.of(context).pop();
     }).catchError((e) {
       print(e);
@@ -420,15 +478,15 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                 Platform.isAndroid
                     ? MaterialPageRoute(
                         builder: (context) => EditarClientePage(
-                              idPedido: this.widget.idPedido,
-                              cliente: this.cliente,
-                            ),
+                          idPedido: this.widget.idPedido,
+                          cliente: this.cliente,
+                        ),
                       )
                     : CupertinoPageRoute(
                         builder: (context) => EditarClientePage(
-                              idPedido: this.widget.idPedido,
-                              cliente: this.cliente,
-                            ),
+                          idPedido: this.widget.idPedido,
+                          cliente: this.cliente,
+                        ),
                       ),
               );
             },
@@ -656,14 +714,14 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
           color: Colors.white,
         ),
         onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SeleccionarProductoInventarioPage(
-                      idPedido: this.widget.idPedido,
-                      cliente: this.cliente,
-                    ),
-              ),
+          context,
+          MaterialPageRoute(
+            builder: (context) => SeleccionarProductoInventarioPage(
+              idPedido: this.widget.idPedido,
+              cliente: this.cliente,
             ),
+          ),
+        ),
       ),
     );
   }

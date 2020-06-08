@@ -62,12 +62,17 @@ class _SeleccionarProductoInventarioPageState
   }
 
   Future<Null> agregarPedidoACliente(Producto producto) async {
+    double totalPago = 0.0;
+    int totalProductos = 0;
+    double ganancias = 0.0;
+
     if (this.validar() && this.cantidadProductoAgregar.text != '') {
       final compras = [];
       int coincidencias = 0;
       this.widget.cliente.compras.forEach((compra) {
         if (compra.producto == producto.id) coincidencias = coincidencias + 1;
       });
+
       if (coincidencias != 0) {
         this
             .widget
@@ -79,14 +84,39 @@ class _SeleccionarProductoInventarioPageState
         this.widget.cliente.compras.add(
             Compra(int.parse(this.cantidadProductoAgregar.text), producto.id));
       }
+
       this.widget.cliente.compras.forEach((compra) {
         compras.add(compra.toMap());
+        totalPago += this
+                .productos
+                .firstWhere((producto) => producto.id == compra.producto)
+                .precioVenta *
+            compra.cantidadProducto;
+        totalProductos += compra.cantidadProducto;
+        ganancias = ganancias +
+            ((this
+                        .productos
+                        .firstWhere(
+                            (producto) => producto.id == compra.producto)
+                        .precioVenta -
+                    this
+                        .productos
+                        .firstWhere(
+                            (producto) => producto.id == compra.producto)
+                        .precioCompra) *
+                compra.cantidadProducto);
       });
+
       await this
           .fs
           .document(
               'Pedidos/${this.widget.idPedido}/Clientes/${this.widget.cliente.id}')
-          .updateData({'Compras': compras});
+          .updateData({
+        'Compras': compras,
+        'TotalPago': totalPago,
+        'CantidadProductos': totalProductos,
+        'Ganancias': ganancias,
+      });
     }
   }
 
@@ -257,13 +287,13 @@ class _SeleccionarProductoInventarioPageState
                   child: CachedNetworkImage(
                     imageUrl: this.productos[index].imagen,
                     imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
                         ),
+                      ),
+                    ),
                     placeholder: (context, url) => CircularProgressIndicator(),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
