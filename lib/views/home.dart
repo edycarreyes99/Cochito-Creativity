@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -220,6 +220,10 @@ class _HomePageState extends State<HomePage> {
                 text: 'Chats',
               ),
               Tab(
+                icon: Icon(Icons.settings),
+                text: 'Ajustes',
+              ),
+              Tab(
                 icon: Icon(Icons.account_circle),
                 text: 'Mi Cuenta',
               )
@@ -233,6 +237,11 @@ class _HomePageState extends State<HomePage> {
             Scaffold(
               body: Center(
                 child: Text("Zona de mensajes."),
+              ),
+            ),
+            Scaffold(
+              body: Center(
+                child: Text("Zona de ajustes."),
               ),
             ),
             AccountPage(
