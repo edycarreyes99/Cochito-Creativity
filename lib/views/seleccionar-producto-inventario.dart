@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cochitocreativity/classes/Detalle-Pedido.dart';
-import 'editar-producto-inventario.dart';
 import 'dart:async';
 import '../classes/Producto.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,6 +25,7 @@ class _SeleccionarProductoInventarioPageState
     extends State<SeleccionarProductoInventarioPage> {
   List<Producto> productos;
   Firestore fs = Firestore.instance;
+  // ignore: cancel_subscriptions
   StreamSubscription<QuerySnapshot> productosSub;
   FirebaseStorage storage = FirebaseStorage.instance;
 
@@ -157,7 +157,7 @@ class _SeleccionarProductoInventarioPageState
                           },
                           decoration: InputDecoration(
                             labelText: 'Cantidad',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -214,7 +214,7 @@ class _SeleccionarProductoInventarioPageState
                           },
                           decoration: InputDecoration(
                             labelText: 'Cantidad',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),

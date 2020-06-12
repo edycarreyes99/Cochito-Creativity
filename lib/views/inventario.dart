@@ -25,6 +25,7 @@ class InventarioPage extends StatefulWidget {
 class _InventarioPageState extends State<InventarioPage> {
   List<Producto> productos;
   Firestore fs = Firestore.instance;
+  // ignore: cancel_subscriptions
   StreamSubscription<QuerySnapshot> productosSub;
   FirebaseStorage storage = FirebaseStorage.instance;
 

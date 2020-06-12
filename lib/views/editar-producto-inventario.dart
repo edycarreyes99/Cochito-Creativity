@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class EditarProductoInventarioPage extends StatefulWidget {
@@ -44,9 +43,7 @@ class _EditarProductoInventarioPageState
 
   Future<String> subirImagenStorage() async {
     if (validarFormulario() && this._imagenProducto != null) {
-      String filename = basename(this._imagenProducto.path);
 
-      String extension = context.extension(filename);
 
       StorageReference storageReference =
           storage.ref().child('Inventario/${this.generarId()}');
@@ -54,9 +51,7 @@ class _EditarProductoInventarioPageState
       StorageUploadTask uploadTask =
           storageReference.putFile(this._imagenProducto);
 
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-
-      Uri location = taskSnapshot.uploadSessionUri;
+      await uploadTask.onComplete;
 
       print("Objeto cargado a la nube de firebase");
 
@@ -81,6 +76,7 @@ class _EditarProductoInventarioPageState
   Future tomarImagen(String lugar) async {
     switch (lugar) {
       case 'Camara':
+        // ignore: deprecated_member_use
         var image = await ImagePicker.pickImage(source: ImageSource.camera)
             .then((imagen) async => await this.recortarImagen(imagen))
             .catchError((e) => print(e));
@@ -91,6 +87,7 @@ class _EditarProductoInventarioPageState
 
         break;
       case 'Galeria':
+        // ignore: deprecated_member_use
         var image = await ImagePicker.pickImage(source: ImageSource.gallery)
             .then((imagen) async => await this.recortarImagen(imagen))
             .catchError((e) => print(e));
@@ -208,7 +205,7 @@ class _EditarProductoInventarioPageState
                           initialValue: this.widget.producto.id,
                           decoration: InputDecoration(
                             labelText: 'ID de Producto',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -233,7 +230,7 @@ class _EditarProductoInventarioPageState
                               },
                             ),
                             labelText: 'Precio',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),

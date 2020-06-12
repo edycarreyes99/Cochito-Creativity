@@ -37,14 +37,20 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   Firestore fs = Firestore.instance;
 
+  // ignore: cancel_subscriptions
   StreamSubscription<QuerySnapshot> pedidoSub;
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   FirebaseMessaging _fcm = FirebaseMessaging();
+
+  TabController _tabController;
+
+  int indexTab;
 
   Future onSelectNotification(String payload) async {
     showDialog(
@@ -72,6 +78,7 @@ class _HomePageState extends State<HomePage> {
     return snapshots;
   }
 
+  // ignore: non_constant_identifier_names
   void firebaseCloudMessaging_Listeners() {
     if (Platform.isIOS) iOS_Permission();
 
@@ -110,6 +117,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   void iOS_Permission() {
     _fcm.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true));
@@ -150,10 +158,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  _handleTabSelection(){
+    setState(() {
+      indexTab = _tabController.index;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
+
+    _tabController = TabController(length: 3, vsync: this);
+
+    _tabController.addListener(_handleTabSelection);
+
     firebaseCloudMessaging_Listeners();
     pedidoSub = this.getListaPedidos().listen((QuerySnapshot snapshot) {
       print("Cambio");
@@ -173,84 +193,94 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 5,
-      child: Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text('Cochito Creativity'),
-          /*actions: <Widget>[
-            PopupMenuButton<String>(
-              onSelected: (String result) {
-                realizarAccionPedido(result);
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                    PopupMenuItem<String>(
-                      value: 'Cerrar Sesion',
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.exit_to_app,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Cochito Creativity'),
+        actions: <Widget>[
+          /*this._tabController.index == 1
+              ? IconButton(
+                  icon: FaIcon(FontAwesomeIcons.hatCowboySide),
+                  onPressed: () => print("Configuracion de inventario."),
+                )
+              : null,
+              this._tabController.index == 1
+              ? IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () => print("Filtrar Lista"),
+                )
+              : null,*/
+
+          /*PopupMenuButton<String>(
+            onSelected: (String result) {
+              realizarAccionPedido(result);
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: 'Cerrar Sesion',
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.exit_to_app,
+                        color: Colors.red,
+                      ),
+                      title: Text(
+                        'Cerrar Sesión',
+                        style: TextStyle(
                           color: Colors.red,
-                        ),
-                        title: Text(
-                          'Cerrar Sesión',
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
                         ),
                       ),
                     ),
-                  ],
+                  ),
+                ],
+          ),*/
+        ].where((w) => w != null).toList(),
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: false,
+          tabs: <Widget>[
+            Tab(
+              icon: Icon(Icons.shopping_cart),
+              text: 'Pedidos',
             ),
-          ],*/
-          bottom: TabBar(
-            isScrollable: true,
-            tabs: <Widget>[
-              Tab(
-                icon: Icon(Icons.shopping_cart),
-                text: 'Pedidos',
-              ),
-              Tab(
-                icon: Icon(Icons.assignment),
-                text: 'Inventario',
-              ),
-              Tab(
-                icon: Icon(Icons.message),
-                text: 'Chats',
-              ),
-              Tab(
-                icon: Icon(Icons.settings),
-                text: 'Ajustes',
-              ),
-              Tab(
-                icon: Icon(Icons.account_circle),
-                text: 'Mi Cuenta',
-              )
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: <Widget>[
-            PedidosPage(),
-            InventarioPage(),
-            Scaffold(
-              body: Center(
-                child: Text("Zona de mensajes."),
-              ),
+            Tab(
+              icon: Icon(Icons.assignment),
+              text: 'Inventario',
             ),
-            Scaffold(
-              body: Center(
-                child: Text("Zona de ajustes."),
-              ),
+            /*Tab(
+              icon: Icon(Icons.message),
+              text: 'Chats',
             ),
-            AccountPage(
-              auth: widget.auth,
-              userId: widget.userId,
-              onSignedOut: widget.onSignedOut,
+            Tab(
+              icon: Icon(Icons.settings),
+              text: 'Ajustes',
+            ),*/
+            Tab(
+              icon: Icon(Icons.account_circle),
+              text: 'Mi Cuenta',
             )
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: this._tabController,
+        children: <Widget>[
+          PedidosPage(),
+          InventarioPage(),
+          /*Scaffold(
+            body: Center(
+              child: Text("Zona de mensajes."),
+            ),
+          ),
+          Scaffold(
+            body: Center(
+              child: Text("Zona de ajustes."),
+            ),
+          ),*/
+          AccountPage(
+            auth: widget.auth,
+            userId: widget.userId,
+            onSignedOut: widget.onSignedOut,
+          )
+        ],
       ),
     );
   }

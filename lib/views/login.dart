@@ -44,9 +44,6 @@ class _LoginPageState extends State<LoginPage> {
     statusBarIconBrightness: Brightness.dark,
   ));
 
-  String _email;
-  String _password;
-
   void iniciarSesion(Auth authProvider) async {
     try {
       await authProvider.signInWithFacebook(context);

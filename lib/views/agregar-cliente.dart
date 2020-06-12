@@ -5,8 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cochitocreativity/classes/Pedido.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AgregarClientePage extends StatefulWidget {
   AgregarClientePage({Key key, this.idPedido, this.pedido}) : super(key: key);
@@ -20,7 +19,6 @@ class AgregarClientePage extends StatefulWidget {
 
 class _AgregarClientePageState extends State<AgregarClientePage> {
   final _formKey = new GlobalKey<FormState>();
-  final _formKeyFecha = new GlobalKey<FormState>();
   final fs = Firestore.instance;
 
   DateTime fechaHoy = DateTime.now();
@@ -119,6 +117,10 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.whatsapp,
+                      color: Colors.white,
+                    ),
                     backgroundColor: Colors.green[800],
                   ),
                 ),
@@ -131,6 +133,10 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.facebook,
+                      color: Colors.white,
+                    ),
                     backgroundColor: Colors.blue[800],
                   ),
                 ),
@@ -143,6 +149,10 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.instagram,
+                      color: Colors.white,
+                    ),
                     backgroundColor: Colors.pinkAccent,
                   ),
                 ),
@@ -155,6 +165,10 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.piggyBank,
+                      color: Colors.white,
+                    ),
                     backgroundColor: Colors.redAccent[100],
                   ),
                 )
@@ -335,7 +349,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                               : null,
                           decoration: InputDecoration(
                             labelText: 'Nombre Cliente',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -353,7 +367,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                               : null,
                           decoration: InputDecoration(
                             labelText: 'Descripción',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -373,7 +387,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                         labelStyle: TextStyle(
                           fontSize: 20.0,
                         ),
-                        hasFloatingPlaceholder: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: this.lugarEntrega == null
                             ? 'Lugar de Entrega'
                             : this.lugarEntrega,
@@ -395,7 +409,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                         labelStyle: TextStyle(
                           fontSize: 20.0,
                         ),
-                        hasFloatingPlaceholder: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: this.redSocial == null
                             ? 'Red Social'
                             : this.redSocial,
@@ -419,7 +433,7 @@ class _AgregarClientePageState extends State<AgregarClientePage> {
                             labelStyle: TextStyle(
                               fontSize: 20.0,
                             ),
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                             labelText: this.fechaModificada == null
                                 ? 'Hora de Entrega'
                                 : this.fechaModificada.format(context),

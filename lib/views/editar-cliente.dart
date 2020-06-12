@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io' show Platform;
 
 import 'package:cochitocreativity/classes/Detalle-Pedido.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditarClientePage extends StatefulWidget {
   EditarClientePage({Key key, this.idPedido, this.cliente}) : super(key: key);
@@ -119,6 +120,10 @@ class _EditarClientePageState extends State<EditarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.whatsapp,
+                      color: Colors.white,
+                    ),
                     backgroundColor: Colors.green[600],
                   ),
                 ),
@@ -131,6 +136,10 @@ class _EditarClientePageState extends State<EditarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.facebook,
+                      color: Colors.white,
+                    ),
                     backgroundColor: Colors.blue[800],
                   ),
                 ),
@@ -144,7 +153,28 @@ class _EditarClientePageState extends State<EditarClientePage> {
                     Navigator.of(context).pop();
                   },
                   leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.instagram,
+                      color: Colors.white,
+                    ),
                     backgroundColor: Colors.pinkAccent,
+                  ),
+                ),
+                ListTile(
+                  title: Text('Cochito Creativity'),
+                  onTap: () {
+                    setState(() {
+                      this.redSocial.value =
+                          TextEditingValue(text: 'Cochito Creativity');
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  leading: CircleAvatar(
+                    child: FaIcon(
+                      FontAwesomeIcons.piggyBank,
+                      color: Colors.white,
+                    ),
+                    backgroundColor: Colors.redAccent[100],
                   ),
                 )
               ],
@@ -204,7 +234,6 @@ class _EditarClientePageState extends State<EditarClientePage> {
           .document(
               'Pedidos/${this.widget.idPedido}/Clientes/${this.widget.cliente.id}')
           .updateData({
-        'TotalPago': 0,
         'NombreCliente': this.nombreCliente.text.toUpperCase(),
         'LugarEntrega': this.lugarEntrega.text,
         'RedSocial': this.redSocial.text,
@@ -351,7 +380,7 @@ class _EditarClientePageState extends State<EditarClientePage> {
                               : null,
                           decoration: InputDecoration(
                             labelText: 'Nombre Cliente',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -369,7 +398,7 @@ class _EditarClientePageState extends State<EditarClientePage> {
                               : null,
                           decoration: InputDecoration(
                             labelText: 'Descripción',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -389,7 +418,7 @@ class _EditarClientePageState extends State<EditarClientePage> {
                         labelStyle: TextStyle(
                           fontSize: 20.0,
                         ),
-                        hasFloatingPlaceholder: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: this.lugarEntrega == null
                             ? 'Lugar de Entrega'
                             : this.lugarEntrega.text,
@@ -411,7 +440,7 @@ class _EditarClientePageState extends State<EditarClientePage> {
                         labelStyle: TextStyle(
                           fontSize: 20.0,
                         ),
-                        hasFloatingPlaceholder: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: this.redSocial == null
                             ? 'Red Social'
                             : this.redSocial.text,
@@ -437,7 +466,7 @@ class _EditarClientePageState extends State<EditarClientePage> {
                               labelStyle: TextStyle(
                                 fontSize: 20.0,
                               ),
-                              hasFloatingPlaceholder: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.auto,
                               labelText: this.fechaModificada == null
                                   ? 'Hora de Entrega'
                                   : this.fechaModificada.format(context),

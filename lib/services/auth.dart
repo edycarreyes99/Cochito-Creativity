@@ -44,6 +44,7 @@ class Auth with ChangeNotifier {
   Future<bool> signInWithFacebook(BuildContext context) async {
     this.ctx = context;
     FirebaseUser currentUser;
+    fbLogin.loginBehavior = FacebookLoginBehavior.nativeOnly;
     final FacebookLoginResult facebookLoginResult =
         await fbLogin.logIn(['email', 'public_profile']);
     showDialog(

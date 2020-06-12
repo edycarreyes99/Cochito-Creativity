@@ -24,13 +24,14 @@ class _AgregarProductoInventarioPageState
   double _precioCompraProducto;
   double _precioVentaProducto;
   final _formKey = new GlobalKey<FormState>();
-  String _nombreProducto;
   String _idNuevoProducto;
   int cantidadProductos;
   final _idProductoController = TextEditingController();
+  // ignore: cancel_subscriptions
   StreamSubscription<DocumentSnapshot> controlSub;
 
   Firestore fs = Firestore.instance;
+  // ignore: cancel_subscriptions
   StreamSubscription<QuerySnapshot> agregarProductoSub;
 
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -100,6 +101,7 @@ class _AgregarProductoInventarioPageState
   Future tomarImagen(String lugar) async {
     switch (lugar) {
       case 'Camara':
+        // ignore: deprecated_member_use
         var image = await ImagePicker.pickImage(source: ImageSource.camera)
             .then((imagen) async => await this.recortarImagen(imagen))
             .catchError((e) => print(e));
@@ -110,6 +112,7 @@ class _AgregarProductoInventarioPageState
 
         break;
       case 'Galeria':
+        // ignore: deprecated_member_use
         var image = await ImagePicker.pickImage(source: ImageSource.gallery)
             .then((imagen) async => await this.recortarImagen(imagen))
             .catchError((e) => print(e));
@@ -149,7 +152,6 @@ class _AgregarProductoInventarioPageState
     this._imagenProducto = null;
     this._idNuevoProducto = null;
     this.cantidadProductos = null;
-    this._nombreProducto = null;
     this._precioCompraProducto = null;
     this._precioVentaProducto = null;
     this.controlSub.cancel();
@@ -251,7 +253,7 @@ class _AgregarProductoInventarioPageState
                           controller: this._idProductoController,
                           decoration: InputDecoration(
                             labelText: 'ID de Producto',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -277,7 +279,7 @@ class _AgregarProductoInventarioPageState
                               },
                             ),
                             labelText: 'Precio de Compra',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -303,7 +305,7 @@ class _AgregarProductoInventarioPageState
                               },
                             ),
                             labelText: 'Precio de Venta',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),

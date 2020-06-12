@@ -10,7 +10,6 @@ import '../classes/Producto.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'editar-cliente.dart';
-import 'dart:io' show Platform;
 
 class DetallesComprasPage extends StatefulWidget {
   DetallesComprasPage({Key key, this.titulo, this.detallePedido, this.idPedido})
@@ -27,7 +26,9 @@ class DetallesComprasPage extends StatefulWidget {
 class _DetallesComprasPageState extends State<DetallesComprasPage> {
   List<Producto> productos;
   Firestore fs = Firestore.instance;
+  // ignore: cancel_subscriptions
   StreamSubscription<QuerySnapshot> productosSub;
+  // ignore: cancel_subscriptions
   StreamSubscription<DocumentSnapshot> clienteSub;
   DetallePedido cliente;
   final _formKey = new GlobalKey<FormState>();
@@ -118,17 +119,15 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
   double actualizarTotalGanancias() {
     double ganancias = 0.0;
 
+    double precioCompra = 0.0;
+    double precioVenta = 0.0;
+    int cantidadProducto = 0;
+
     this.cliente.compras.forEach((compra) {
-      ganancias = ganancias +
-          ((this
-                      .productos
-                      .firstWhere((producto) => producto.id == compra.producto)
-                      .precioVenta -
-                  this
-                      .productos
-                      .firstWhere((producto) => producto.id == compra.producto)
-                      .precioCompra) *
-              compra.cantidadProducto);
+      precioCompra = this.productos.where((producto) => producto.id == compra.producto).toList()[0].precioCompra;
+      precioVenta = this.productos.where((producto) => producto.id == compra.producto).toList()[0].precioVenta;
+      cantidadProducto = compra.cantidadProducto;
+      ganancias += (precioVenta - precioCompra) * cantidadProducto;
     });
 
     return ganancias;
@@ -136,7 +135,6 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
 
   Future<void> actualizarCompraPedido(Compra compra) async {
     final auxCompra = [];
-    var totalPago = 0.0;
     this.cliente.compras.forEach((compraa) {
       if (compraa == compra) {
         compraa.cantidadProducto = int.parse(this.nuevaCantidadPrducto.text);
@@ -324,7 +322,7 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                           },
                           decoration: InputDecoration(
                             labelText: 'Cantidad',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
@@ -381,7 +379,7 @@ class _DetallesComprasPageState extends State<DetallesComprasPage> {
                           },
                           decoration: InputDecoration(
                             labelText: 'Cantidad',
-                            hasFloatingPlaceholder: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
                       ),
