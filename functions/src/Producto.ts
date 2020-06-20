@@ -1,5 +1,6 @@
 export interface Producto {
-    Imagen: string;
-    Precio: number;
     ID: string;
+    Imagen: string;
+    PrecioCompra: number;
+    PrecioVenta: number;
 }

@@ -1,9 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
-// import * as firebaseCredentials from '../serviceAccountKey.json';
 const admin = require("firebase-admin");
-// import { Producto } from './Producto';
 admin.initializeApp(functions.config().firebase);
 const fs = admin.firestore();
 const fcm = admin.messaging();
@@ -29,10 +27,8 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
     let comprasAntes = clienteAntes.Compras;
     const comprasDespues = clienteDespues.Compras;
     const dispositivosQuerySnapshot = await fs.collection('Dispositivos').get();
-    // const inventarioQuerySnapshot = await fs.collection('Inventario').get();
     const clientesQuerySnapshot = await fs.collection(snapshot.after.ref.parent.path).get();
     const clientes = clientesQuerySnapshot.docs.map(snap => snap.data());
-    // const inventario = inventarioQuerySnapshot.docs.map((snap) => snap.data());
     const tokens = dispositivosQuerySnapshot.docs.map(snap => snap.id);
     const cliente = snapshot.after.data();
     const fechaEn = cliente.FechaEntrega.toDate();
@@ -40,32 +36,38 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
     const cantidadClientesPorPedido = clientes.length;
     let totalProductosPorPedido = 0;
     let totalGanancias = 0;
-    clientes.forEach(clientee => {
-        totalPagoPorPedido += clientee.TotalPago;
-        totalProductosPorPedido += clientee.CantidadProductos;
-        totalGanancias += clientee.Ganancias;
-    });
-    await snapshot.after.ref.parent.parent.update({
-        'TotalPago': totalPagoPorPedido,
-        'CantidadClientes': cantidadClientesPorPedido,
-        'TotalProductos': totalProductosPorPedido,
-        'TotalGanancias': totalGanancias
-    }).then((res) => {
-        console.log(`!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Actualizado!`);
-    }).catch(erro => {
-        console.log(erro);
+    const inventario = [];
+    await fs.collection("Inventario").get().then(async (snap) => {
+        snap.forEach(doc => {
+            const producto = {
+                ID: doc.data()["ID"].toString(),
+                Imagen: doc.data()["Imagen"].toString(),
+                PrecioCompra: doc.data()["PrecioCompra"],
+                PrecioVenta: doc.data()["PrecioVenta"]
+            };
+            inventario.push(producto);
+        });
+        clientes.forEach(clientee => {
+            clientee.Compras.forEach((compraa) => {
+                totalPagoPorPedido += inventario.filter((productoo) => compraa.Producto === productoo.ID)[0].PrecioCompra * compraa.Cantidad;
+            });
+            totalProductosPorPedido += clientee.CantidadProductos;
+            totalGanancias += clientee.Ganancias;
+        });
+        await snapshot.after.ref.parent.parent.update({
+            'TotalPago': totalPagoPorPedido,
+            'CantidadClientes': cantidadClientesPorPedido,
+            'TotalProductos': totalProductosPorPedido,
+            'TotalGanancias': totalGanancias
+        }).then((res) => {
+            console.log(`!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Actualizado!`);
+        }).catch(erro => {
+            console.log(erro);
+        });
+    }).catch(err => {
+        console.log('Error getting documents', err);
     });
     if (comprasDespues.length < comprasAntes.length) {
-        /*let totalPago = 0;
-        let cantidadProductos = 0;
-        await snapshot.after.ref.update({
-            'TotalPago': totalPago,
-            'CantidadProductos': cantidadProductos
-        }).then(async documento => {
-            console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.after.data()!.NombreCliente}`);
-        }).catch(er => {
-            console.log(er);
-        });*/
         payload = {
             notification: {
                 title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
@@ -75,24 +77,6 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
         };
     }
     else if (comprasAntes.length < comprasDespues.length) {
-        /*let totalPago = 0;
-        let cantidadProductos = 0;
-        comprasDespues.forEach(async (compra: Compra) => {
-            inventario.forEach(producto => {
-                if (producto.ID === compra.Producto) {
-                    totalPago += compra.Cantidad * producto.Precio;
-                }
-            });
-            cantidadProductos += compra.Cantidad;
-        });
-        await snapshot.after.ref.update({
-            'TotalPago': totalPago,
-            'CantidadProductos': cantidadProductos
-        }).then(async documento => {
-            console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.before.data()!.NombreCliente}`);
-        }).catch(er => {
-            console.log(er);
-        });*/
         payload = {
             notification: {
                 title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
@@ -102,26 +86,9 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
         };
     }
     if (comprasAntes.length === comprasDespues.length) {
-        comprasAntes.forEach(async (compra, index) => {
+        for (const compra of comprasAntes) {
+            const index = comprasAntes.indexOf(compra);
             if (compra.Cantidad !== comprasDespues[index].Cantidad) {
-                /*let totalPago = 0;
-                let cantidadProductos = 0;
-                comprasDespues.forEach(async (compraa: Compra) => {
-                    inventario.forEach(producto => {
-                        if (producto.ID === compraa.Producto) {
-                            totalPago += compraa.Cantidad * producto.Precio;
-                        }
-                    });
-                    cantidadProductos += compraa.Cantidad;
-                });
-                await snapshot.before.ref.update({
-                    'TotalPago': totalPago,
-                    'CantidadProductos': cantidadProductos
-                }).then(documento => {
-                    console.log(`Se han actualizado los datos del pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} para el cliente ${snapshot.before.data()!.NombreCliente}`);
-                }).catch(er => {
-                    console.log(er);
-                });*/
                 payload = {
                     notification: {
                         title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
@@ -130,7 +97,7 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
                     }
                 };
             }
-        });
+        }
     }
     comprasAntes = clienteAntes.Compras;
     if (clienteAntes.Descripcion !== clienteDespues.Descripcion) {
@@ -150,23 +117,7 @@ exports.pedidoModificado = functions.firestore.document('Pedidos/{pedidoId}/Clie
                 clickAction: 'FLUTTER_NOTIFICATION_CLICK'
             }
         };
-    } /*else if (clienteAntes.FechaEntrega !== clienteDespues.FechaEntrega) {
-        payload = {
-            notification: {
-                title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
-                body: `Se ha modificado la fecha de entrega del pedido para ${cliente.NombreCliente}.`,
-                clickAction: 'FLUTTER_NOTIFICATION_CLICK'
-            }
-        };
-    } else {
-        payload = {
-            notification: {
-                title: `!Pedido ${fechaEn.getDate()}-${fechaEn.getMonth() + 1}-${fechaEn.getFullYear()} Modificado!`,
-                body: `Se ha modificado el pedido para ${cliente.NombreCliente}.`,
-                clickAction: 'FLUTTER_NOTIFICATION_CLICK'
-            }
-        };
-    }*/
+    }
     return fcm.sendToDevice(tokens, payload);
 });
 exports.nuevoPedidoAgregado = functions.firestore.document('Pedidos/{pedidoId}').onCreate(async (snapshot) => {
