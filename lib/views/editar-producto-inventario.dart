@@ -25,7 +25,8 @@ class _EditarProductoInventarioPageState
   final _formKey = new GlobalKey<FormState>();
   FirebaseStorage storage = FirebaseStorage.instance;
   Firestore fs = Firestore.instance;
-  TextEditingController precioProducto = new TextEditingController();
+  TextEditingController precioCompra = new TextEditingController();
+  TextEditingController precioVenta = new TextEditingController();
 
   String generarId() {
     return this.widget.producto.id;
@@ -43,8 +44,6 @@ class _EditarProductoInventarioPageState
 
   Future<String> subirImagenStorage() async {
     if (validarFormulario() && this._imagenProducto != null) {
-
-
       StorageReference storageReference =
           storage.ref().child('Inventario/${this.generarId()}');
 
@@ -106,8 +105,10 @@ class _EditarProductoInventarioPageState
   @override
   void initState() {
     // TODO: implement initState
-    this.precioProducto.value =
+    this.precioVenta.value =
         TextEditingValue(text: this.widget.producto.precioVenta.toString());
+    this.precioCompra.value =
+        TextEditingValue(text: this.widget.producto.precioCompra.toString());
     super.initState();
   }
 
@@ -215,9 +216,9 @@ class _EditarProductoInventarioPageState
                           keyboardType: TextInputType.number,
                           autofocus: false,
                           validator: (value) => value.isEmpty
-                              ? 'Debe de ingresar un precio para el producto'
+                              ? 'Debe de ingresar un precio de compra para el producto'
                               : null,
-                          controller: this.precioProducto,
+                          controller: this.precioCompra,
                           decoration: InputDecoration(
                             prefix: Text('C\$'),
                             suffix: IconButton(
@@ -229,7 +230,32 @@ class _EditarProductoInventarioPageState
                                 this._formKey.currentState.reset();
                               },
                             ),
-                            labelText: 'Precio',
+                            labelText: 'Precio de compra',
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          autofocus: false,
+                          validator: (value) => value.isEmpty
+                              ? 'Debe de ingresar un precio de venta para el producto'
+                              : null,
+                          controller: this.precioVenta,
+                          decoration: InputDecoration(
+                            prefix: Text('C\$'),
+                            suffix: IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.redAccent[100],
+                              ),
+                              onPressed: () {
+                                this._formKey.currentState.reset();
+                              },
+                            ),
+                            labelText: 'Precio de compra',
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
                         ),
@@ -269,7 +295,8 @@ class _EditarProductoInventarioPageState
                                 .document(this.generarId())
                                 .updateData({
                               'Imagen': url,
-                              'Precio': double.parse(this.precioProducto.text)
+                              'PrecioVenta': double.parse(this.precioVenta.text),
+                              'PrecioCompra': double.parse(this.precioCompra.text)
                             }).then((value) {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
