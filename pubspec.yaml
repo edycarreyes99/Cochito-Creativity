@@ -1,5 +1,5 @@
 name: cochitocreativity
-description: A new Flutter project.
+description: Sistema de pedidos e inventario para la micro empresa Cochito Creativity.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.

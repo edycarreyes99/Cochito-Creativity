@@ -1,6 +1,6 @@
 # cochitocreativity
 
-A new Flutter project.
+Sistema de pedidos e inventario para la micro empresa Cochito Creativity.
 
 ## Getting Started
 
