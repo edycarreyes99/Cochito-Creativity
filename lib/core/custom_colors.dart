@@ -28,7 +28,20 @@ class CustomColors {
     900: const Color(0xFF263238),
   });
 
+  // Text Colors
+  Color _cTextColor = Color(0xFF535353);
+  Color _cTextLightColor = Color(0xFFACACAC);
+
+  // Default Paddings
+  double _cDefaultPadding = 20.0;
+
   get primaryColor => this._primaryColor;
 
   get accentColor => this._accentColor;
+
+  get cTextColor => this._cTextColor;
+
+  get cTextLightColor => this._cTextLightColor;
+
+  get cDefaultPadding => this._cDefaultPadding;
 }
